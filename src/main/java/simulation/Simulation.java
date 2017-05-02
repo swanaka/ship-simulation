@@ -20,8 +20,8 @@ public abstract class Simulation {
 	}
 	
 	public void execute(){
-		while(now == endTime){
-			timeNext(now);
+		while(now <= endTime){
+			//timeNext(now);
 			save(now);
 			now++;
 		}

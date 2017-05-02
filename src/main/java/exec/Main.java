@@ -31,7 +31,7 @@ public class Main {
 	public static void main(String[] args){
 		
 		loadInitialFleet("../../data/ship_config.csv");
-		loadInitialPorts("../../data/port_config.csv");
+		loadInitialPorts("./data/port_config.csv");
 		loadMarketInfo("../../data/market_config.csv");
 		
 		Simulation simulation = new SimpleSimulation(365);
@@ -68,12 +68,14 @@ public class Main {
 				String loadingType = data.get(i+3)[1];
 				String bunkeringCapacity = data.get(i+3)[2];
 				String loadingCapacity = data.get(i+3)[3];
+				String berthingFee = data.get(i+3)[4];
 				int numOfPorts = Integer.parseInt(data.get(i+4)[0]);
 				HashMap<String, String> param = new HashMap<String, String>();
 				param.put("FuelType", fuelType);
 				param.put("LoadingType", loadingType);
 				param.put("BunkeringCapacity", bunkeringCapacity);
 				param.put("LoadingCapacity", loadingCapacity);
+				param.put("BerthingFee", berthingFee);
 				Port port = new SimplePort(name);
 				port.addPortFacilities(param,numOfPorts);
 				i = i + 5;
