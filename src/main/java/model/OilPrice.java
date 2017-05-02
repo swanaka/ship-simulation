@@ -11,16 +11,22 @@ public class OilPrice extends FuelPrice{
 	private double downFactor;
 	private double upProbability;
 	private double prePrice;
+	
+	private int counter = 0;
 
 	@Override
 	public void timeNext() {
 		this.time++;
-		prePrice = this.price;
-		double n = Math.random();
-		if (n >= upProbability){
-			setPrice(this.price * upFactor);
-		}else{
-			setPrice(this.price * downFactor);
+		counter++;
+		if (counter > 24){
+			prePrice = this.price;
+			double n = Math.random();
+			if (n >= upProbability){
+				setPrice(this.price * upFactor);
+			}else{
+				setPrice(this.price * downFactor);
+			}
+			counter = 0;
 		}
 		
 	}

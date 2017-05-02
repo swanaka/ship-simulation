@@ -13,6 +13,7 @@ public class Freight{
 	private double pforRate;
 	
 	protected int time;
+	private int counter = 0;
 	
 	public Freight(double upforStandard,double downforStandard,double pforStandard,double upforRate, double downforRate, double pforRate, double initialStandard, double initialRate){
 		this.upforStandard = upforStandard;
@@ -27,23 +28,25 @@ public class Freight{
 	}
 	public void timeNext(){
 		this.time++;
-		double n = Math.random();
-		if (n >= pforStandard){
-			this.standardFreight = this.standardFreight * upforStandard;
-		}else{
-			this.standardFreight = this.standardFreight * downforStandard;
-		}
-		
-		double m = Math.random();
-		
-			double oilprice = Market.fuels.get(0).price;
-			double preOilprice = Market.fuels.get(0).getPastPrice(-1);
-		if (m >= pforRate){
-			this.freightRate = this.freightRate * upforRate;
-			this.freightRate = this.freightRate - (oilprice - preOilprice)/preOilprice * this.freightRate;
-		}else{
-			this.freightRate = this.freightRate * downforRate;
-			this.freightRate = this.freightRate - (oilprice - preOilprice)/preOilprice * this.freightRate;
+		if (counter > 24){
+			double n = Math.random();
+			if (n >= pforStandard){
+				this.standardFreight = this.standardFreight * upforStandard;
+			}else{
+				this.standardFreight = this.standardFreight * downforStandard;
+			}
+			
+			double m = Math.random();
+			
+				double oilprice = Market.fuels.get(0).price;
+				double preOilprice = Market.fuels.get(0).getPastPrice(-1);
+			if (m >= pforRate){
+				this.freightRate = this.freightRate * upforRate;
+				this.freightRate = this.freightRate - (oilprice - preOilprice)/preOilprice * this.freightRate;
+			}else{
+				this.freightRate = this.freightRate * downforRate;
+				this.freightRate = this.freightRate - (oilprice - preOilprice)/preOilprice * this.freightRate;
+			}
 		}
 	}
 	public double getPrice(){
