@@ -25,6 +25,7 @@ Thumbs.db
 out
 build
 bin
+data
 
 # Other
 *.log
