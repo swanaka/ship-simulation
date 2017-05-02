@@ -14,9 +14,9 @@ public class Fleet {
 	public static Fleet getInstance(){
 		return fleet;
 	}
-	public static void timeNext(int now){
+	public static void timeNext(){
 		for (Ship ship : ships){
-			ship.timeNext(now);
+			ship.timeNext();
 		}
 	}
 	public static void add(Ship ship){

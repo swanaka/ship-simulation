@@ -5,8 +5,9 @@ import model.Status.FuelType;
 public abstract class FuelPrice {
 	protected FuelType fuelType;
 	protected double price;
+	protected int time;
 	
-	public abstract void timeNext(int now);
+	public abstract void timeNext();
 	public abstract double getPastPrice(int past);
 	
 	public FuelType getFuelType() {

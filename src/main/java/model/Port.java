@@ -20,6 +20,7 @@ public abstract class Port {
 	//	List of ships whose destination or location is this ports.
 	private List<Ship> waitingShips;
 	protected String name;
+	protected int time;
 
 	//Function
 	public abstract void loading();
@@ -31,11 +32,11 @@ public abstract class Port {
 	public abstract void addPortFacilities(HashMap<String, String> param, int num);
 	public abstract void addPortFacilities(HashMap<String, String>[] params);
 	public abstract int getTimeForReady(Ship ship);
-	public void gatewayForBerth(int now){
+	public void gatewayForBerth(){
 		for (Ship ship : waitingShips){
 			PortFacility port = checkBerthing(ship);
 			if(!(port == null)){
-				port.accept(ship,now);
+				port.accept(ship);
 			}
 		}
 	};
@@ -46,9 +47,10 @@ public abstract class Port {
 		facilities = new ArrayList<PortFacility>();
 	}
 	
-	public void timeNext(int now){
+	public void timeNext(){
+		this.time++;
 		// 1. Check the occupied and # of waiting ship and If it is available, change the ship's status => BERTH
-		gatewayForBerth(now);
+		gatewayForBerth();
 		// 2. BERTH, BUNKERING, LOADING, UNLOADING, Port provide service,
 		for (PortFacility facility : facilities){
 			facility.berthing();
@@ -91,7 +93,7 @@ public abstract class Port {
 		protected double loadingCapacity;
 		
 
-		public abstract void accept(Ship ship,int now);
+		public abstract void accept(Ship ship);
 		public abstract void berthing();
 		public abstract void loading();
 		public abstract void unloading();

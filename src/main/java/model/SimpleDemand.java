@@ -39,11 +39,12 @@ public class SimpleDemand extends Demand{
 	}
 
 	@Override
-	public void timeNext(int now) {
+	public void timeNext() {
+		this.time++;
 		if (counter > this.limit){
 			super.setAmountOfCargo(amount);
-			super.setStartTime(now);
-			super.setEndTime(now + duration);
+			super.setStartTime(super.time);
+			super.setEndTime(super.time + duration);
 			super.setDeparture(departure);
 			super.setDestination(destination);
 			counter = 0;

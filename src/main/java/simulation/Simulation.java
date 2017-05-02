@@ -21,23 +21,23 @@ public abstract class Simulation {
 	
 	public void execute(){
 		while(now <= endTime){
-			//timeNext(now);
+			timeNext();
 			save(now);
 			now++;
 		}
 	};
 	
-	public void timeNext(int now) {
+	public void timeNext() {
 		//1 Update the market situation.
-		Market.timeNext(now);
+		Market.timeNext();
 		//2 Check demand, and if new demand happen, make a new contract, schedule to ship.
 		if(Market.checkDemand()){
 			Market.addContract();
 		}
 		//3 Update ships' situation.
-		Fleet.timeNext(now);
+		Fleet.timeNext();
 		//4 Update ports' situation
-		PortNetwork.timeNext(now);
+		PortNetwork.timeNext();
 		
 		
 	}

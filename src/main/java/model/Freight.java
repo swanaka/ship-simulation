@@ -12,6 +12,8 @@ public class Freight{
 	private double downforRate;
 	private double pforRate;
 	
+	protected int time;
+	
 	public Freight(double upforStandard,double downforStandard,double pforStandard,double upforRate, double downforRate, double pforRate, double initialStandard, double initialRate){
 		this.upforStandard = upforStandard;
 		this.downforStandard = downforStandard;
@@ -23,7 +25,8 @@ public class Freight{
 		this.standardFreight = initialStandard;
 		this.freightRate = initialRate;
 	}
-	public void timeNext(int now){
+	public void timeNext(){
+		this.time++;
 		double n = Math.random();
 		if (n >= pforStandard){
 			this.standardFreight = this.standardFreight * upforStandard;

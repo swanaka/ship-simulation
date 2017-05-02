@@ -17,10 +17,10 @@ public class PortNetwork {
 		return portnetwork;
 	}
 
-	public static void timeNext(int now){
+	public static void timeNext(){
 		
 		for (Port port : portList){
-			port.timeNext(now);
+			port.timeNext();
 		}
 				
 	}

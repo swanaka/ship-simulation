@@ -35,12 +35,14 @@ public abstract class Ship {
 	protected MaintenanceStatus mStatus;
 	protected int waitingTime;
 	protected double speed;
+	protected int time;
 	
 	//Function
-	public void timeNext(int now){
+	public void timeNext(){
+		this.time++;
 		switch(this.status){
 		case TRANSPORT:
-			transport(now);
+			transport();
 		case WAIT:
 			this.waitingTime ++;
 		case BERTH:
@@ -48,8 +50,8 @@ public abstract class Ship {
 		}
 
 	}
-	public abstract void transport(int now);
-	public abstract void appropriateRevenue(int now);
+	public abstract void transport();
+	public abstract void appropriateRevenue();
 	public abstract void addSchedule(int startTime, int endTime, Port departure, Port destination, double amount);
 	public abstract void addFreightToSchedule(double freight);
 	public abstract int getTime(double distance);

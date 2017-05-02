@@ -29,7 +29,7 @@ public class SimpleShip extends Ship {
 	}
 
 	@Override
-	public void transport(int now) {
+	public void transport() {
 
 //		// 1. Get planned distance
 //		int plannedTime = super.schedule.get(0).getEndTime();
@@ -57,9 +57,9 @@ public class SimpleShip extends Ship {
 	}
 	
 	@Override
-	public void appropriateRevenue(int now) {
+	public void appropriateRevenue() {
 		Contract contract = super.schedule.get(0);
-		double revenue = contract.getIncome() + contract.getPenalty(now);
+		double revenue = contract.getIncome() + contract.getPenalty(super.time);
 		super.owner.addCashFlow(revenue);
 		
 	}

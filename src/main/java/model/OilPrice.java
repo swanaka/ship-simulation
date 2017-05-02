@@ -13,7 +13,8 @@ public class OilPrice extends FuelPrice{
 	private double prePrice;
 
 	@Override
-	public void timeNext(int now) {
+	public void timeNext() {
+		this.time++;
 		prePrice = this.price;
 		double n = Math.random();
 		if (n >= upProbability){

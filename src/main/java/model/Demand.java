@@ -10,8 +10,9 @@ public abstract class Demand {
 	private String departure;
 	private String destination;
 	private boolean isdemand;
+	protected int time;
 	
-	public abstract void timeNext(int now);
+	public abstract void timeNext();
 	public boolean isDemand(){
 		return isdemand;
 	};

@@ -8,7 +8,7 @@ public class Market {
 	protected static List<FuelPrice> fuels;
 	protected static List<Demand> demands;
 	protected static List<Freight> freights;
-	
+
 	private static Market market = new Market();
 	
 	private Market(){
@@ -32,15 +32,15 @@ public class Market {
 		freights.add(freight);
 	}
 	
-	public static void timeNext(int now){
+	public static void timeNext(){
 		for(FuelPrice fuelPrice : fuels){
-			fuelPrice.timeNext(now);
+			fuelPrice.timeNext();
 		}
 		for (Demand demand : demands){
-			demand.timeNext(now);
+			demand.timeNext();
 		}
 		for (Freight freight : freights){
-			freight.timeNext(now);
+			freight.timeNext();
 		}
 		
 	}
