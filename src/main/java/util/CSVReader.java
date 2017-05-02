@@ -40,15 +40,16 @@ public class CSVReader {
 	public static List<String[]> forGeneral(String filePath){
 		List<String[]> returnList = new ArrayList<String[]>(); 
 		try {
+			String path = new File(".").getAbsoluteFile().getParent();
+	        System.out.println(path);
 			File f =  new File(filePath);
 			BufferedReader br = new BufferedReader(new FileReader(f));
 			
 			String line;
-			int index = 0;
+
 			while ((line =br.readLine()) != null){
 				String[] data = line.split(",",0);
 				returnList.add(data);
-				index++;
 			}
 			br.close();
 			
