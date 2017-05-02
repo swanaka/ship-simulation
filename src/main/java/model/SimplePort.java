@@ -20,11 +20,12 @@ public class SimplePort extends Port {
 	public void addPortFacility(HashMap<String, String> param){
 		String name = param.get("Name");
 		super.name = name;
+		System.out.println(param.get("FuelType"));
 		FuelType fuelType = FuelType.valueOf(param.get("FuelType"));
 		LoadingType loadingType = LoadingType.valueOf(param.get("LoadingType"));
 		double bunkeringCapacity = Double.parseDouble(param.get("BunkeringCapacity"));
 		double loadingCapacity = Double.parseDouble(param.get("LoadingCapacity"));
-		double berthingFee = Double.parseDouble(param.get("BerthinFee"));
+		double berthingFee = Double.parseDouble(param.get("BerthingFee"));
 		PortFacility facility = new SimplePortFacitliy(fuelType, loadingType, bunkeringCapacity, loadingCapacity, berthingFee);
 		super.facilities.add(facility);
 	}
