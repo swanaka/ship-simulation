@@ -28,7 +28,7 @@ public abstract class Ship {
 	protected double amountOfCargo;
 	protected double remainingDistance;
 	protected double cashFlow;
-	protected double emssionedGas;
+	protected double emissionedGas;
 	protected ShipStatus status;
 	protected BunkeringStatus bStatus;
 	protected LoadingStatus lStatus;
@@ -37,6 +37,19 @@ public abstract class Ship {
 	protected double speed;
 	protected int time;
 	
+	public Ship(){
+		amountOfFuel = 0;
+		ratioOfAccident = 0;
+		amountOfCargo = 0;
+		remainingDistance = 0;
+		cashFlow = 0;
+		emissionedGas = 0;
+		status = ShipStatus.BERTH;
+		bStatus = BunkeringStatus.NO;
+		mStatus = MaintenanceStatus.NO;
+		waitingTime = 0;
+		time = 0;
+	}
 	//Function
 	public void timeNext(){
 		this.time++;

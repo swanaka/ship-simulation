@@ -2,6 +2,8 @@ package model;
 
 
 
+import java.util.ArrayList;
+
 import model.Status.FuelType;
 import model.Status.LoadingType;
 import model.Status.ShipStatus;
@@ -18,6 +20,7 @@ public class SimpleShip extends Ship {
 	
 	public SimpleShip(double speed, LoadingType cargoType, double cargoAmount, double foc, double fuelCapacity, FuelType fuelType){
 		super();
+		this.schedule = new ArrayList<Contract>();
 		this.speed = speed;
 		this.fuelTank = new HFOTank();
 		this.fuelTank.setCapacity(fuelCapacity);
@@ -46,7 +49,7 @@ public class SimpleShip extends Ship {
 		double actualDis = speed;
 		super.remainingDistance -= actualDis;
 		super.amountOfFuel -= foc;
-		super.emssionedGas += calcGasEmission(foc);
+		super.emissionedGas += calcGasEmission(foc);
 		
 		//5. Update status
 		if (remainingDistance < 0){
