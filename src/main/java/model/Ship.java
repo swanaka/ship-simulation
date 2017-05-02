@@ -11,7 +11,7 @@ import model.Status.ShipStatus;
 import util.Location;
 
 public abstract class Ship {
-	//Congiguration of ship
+	//Configuration of ship
 	protected Hull hull;
 	protected Engine engine;
 	protected FuelTank fuelTank;
