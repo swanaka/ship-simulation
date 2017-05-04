@@ -50,8 +50,8 @@ public class SimpleShip extends Ship {
 
 		// 4. Update remainng distance, fuel, gas emission
 		double actualDis = speed;
-		super.remainingDistance -= actualDis;
-		super.amountOfFuel -= foc;
+		this.setRemainingDistance(this.remainingDistance - actualDis);
+		this.setAmountOfFuel(this.amountOfFuel - foc);
 		super.emissionedGas += calcGasEmission(foc);
 
 	}

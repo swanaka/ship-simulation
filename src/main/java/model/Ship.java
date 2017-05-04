@@ -109,6 +109,9 @@ public abstract class Ship {
 	}
 	public void setRemainingDistance(double remainingDistance) {
 		this.remainingDistance = remainingDistance;
+		if(this.remainingDistance < 0){
+			this.remainingDistance = 0;
+		}
 	}
 	public Location getLoc() {
 		return loc;
@@ -127,6 +130,10 @@ public abstract class Ship {
 			this.amountOfFuel = this.fuelTank.capacity;
 		}else{
 			this.amountOfFuel = amountOfFuel;
+		}
+		if (amountOfFuel < 0){
+			this.amountOfFuel = 0;
+			System.out.println("Short of Fuel!");
 		}
 	}
 
