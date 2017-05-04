@@ -114,8 +114,14 @@ public class Main {
 		double downFactor = 0.888;
 		double probability = 0.539;
 		FuelPrice oilprice = new OilPrice(initialPrice,upFactor,downFactor,probability);
-		
-		Demand demand = new SimpleDemand();
+
+		int limit = 2160;
+		double amount = 60000;
+		int duration = 2160;
+		String departure = "Japan";
+		String destination = "Los Angels";
+		Demand demand = new SimpleDemand(cargoType,limit,amount,duration,departure,destination);
+
 		Market.addDemand(demand);
 		Market.addFuelPrice(oilprice);
 		Market.addFreight(freight);
