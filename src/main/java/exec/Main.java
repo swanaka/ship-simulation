@@ -14,7 +14,7 @@ import model.Port;
 import model.SimpleShip;
 import model.SimpleShipOperator;
 import model.Status.FuelType;
-import model.Status.LoadingType;
+import model.Status.CargoType;
 import model.PortNetwork;
 import model.Ship;
 import model.ShipOperator;
@@ -30,9 +30,10 @@ public class Main {
 
 	public static void main(String[] args){
 		
-		loadInitialFleet("../../data/ship_config.csv");
+		
 		loadInitialPorts("./data/port_config.csv");
 		loadMarketInfo("../../data/market_config.csv");
+		loadInitialFleet("../../data/ship_config.csv");
 		
 		Simulation simulation = new SimpleSimulation(365);
 		System.out.println("Simulation Start");
@@ -44,13 +45,14 @@ public class Main {
 	private static void loadInitialFleet(String filePath){
 		//List<String[]> data =CSVReader.forGeneral(filePath);
 		double speed = 28;
-		LoadingType cargoType = LoadingType.HFO;
+		CargoType cargoType = CargoType.HFO;
 		double cargoAmount = 300000;
 		double foc = 1.24;
 		double fuelCapacity = 5000;
 		FuelType fuelType = FuelType.OIL;
+		Port initialPort = PortNetwork.getPort("Japan");
 		
-		Ship ship = new SimpleShip(speed, cargoType, cargoAmount, foc, fuelCapacity, fuelType);
+		Ship ship = new SimpleShip(speed, cargoType, cargoAmount, foc, fuelCapacity, fuelType, initialPort);
 		ShipOperator operator = new SimpleShipOperator("NYK");
 		ship.setOwner(operator);
 		Fleet.add(ship);
@@ -78,8 +80,10 @@ public class Main {
 				param.put("BerthingFee", berthingFee);
 				Port port = new SimplePort(name);
 				port.addPortFacilities(param,numOfPorts);
-				i = i + 5;
+				ports.add(port);
+				i = i + 4;
 				portCount ++;
+				System.out.println(portCount);
 			}
 			if (data.get(i)[0].equals("RouteMatrix")){
 				routeMatrix = new double[portCount][portCount];
@@ -94,20 +98,21 @@ public class Main {
 	}
 	
 	private static void loadMarketInfo(String filePath){
-		double upforStandard = 0;
-		double downforStandard = 0;
-		double pforStandard = 0;
-		double upforRate = 0;
-		double downforRate = 0;
-		double pforRate = 0;
-		double initialStandard = 0;
-		double initialRate = 0;
-		Freight freight = new Freight(upforStandard,downforStandard,pforStandard,upforRate,downforRate,pforRate,initialStandard,initialRate);
+		CargoType cargoType = CargoType.HFO;
+		double upforStandard = 1.037;
+		double downforStandard = 0.964;
+		double pforStandard = 0.688;
+		double upforRate = 1.246;
+		double downforRate = 0.89;
+		double pforRate = 0.457;
+		double initialStandard = 10.82;
+		double initialRate = 1.84;
+		Freight freight = new Freight(cargoType,upforStandard,downforStandard,pforStandard,upforRate,downforRate,pforRate,initialStandard,initialRate);
 		//List<String[]> data = CSVReader.forGeneral(filePath);
-		double initialPrice = 0;
-		double upFactor = 0;
-		double downFactor = 0;
-		double probability = 0;
+		double initialPrice = 152;
+		double upFactor = 1.124;
+		double downFactor = 0.888;
+		double probability = 0.539;
 		FuelPrice oilprice = new OilPrice(initialPrice,upFactor,downFactor,probability);
 		
 		Demand demand = new SimpleDemand();

@@ -1,15 +1,16 @@
 package model;
 
-import model.Status.LoadingType;
+import model.Status.CargoType;
+
 
 public abstract class Demand {
-	private LoadingType cargoType;
+	private CargoType cargoType;
 	private int startTime;
 	private int endTime;
 	private double amountOfCargo;
 	private String departure;
 	private String destination;
-	private boolean isdemand;
+	protected boolean isdemand;
 	protected int time;
 	
 	public abstract void timeNext();
@@ -17,11 +18,11 @@ public abstract class Demand {
 		return isdemand;
 	};
 
-	public LoadingType getCargoType() {
+	public CargoType getCargoType() {
 		return cargoType;
 	}
 
-	public void setCargoType(LoadingType cargoType) {
+	public void setCargoType(CargoType cargoType) {
 		this.cargoType = cargoType;
 	}
 	public int getStartTime() {

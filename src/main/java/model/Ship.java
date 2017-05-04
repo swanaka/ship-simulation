@@ -2,10 +2,11 @@ package model;
 
 import java.util.List;
 
+import model.Port.PortFacility;
 import model.Status.BunkeringStatus;
+import model.Status.CargoType;
 import model.Status.FuelType;
 import model.Status.LoadingStatus;
-import model.Status.LoadingType;
 import model.Status.MaintenanceStatus;
 import model.Status.ShipStatus;
 import util.Location;
@@ -16,13 +17,14 @@ public abstract class Ship {
 	protected Engine engine;
 	protected FuelTank fuelTank;
 	protected Propeller propeller;
-	protected List<Contract> schedule;
+	protected List<Schedule> schedule;
 	protected ShipOperator owner;
 	protected CargoHold cargoHold;
 	protected String name;
 
 	//Status of ship
 	protected Location loc;
+	protected Port berthingPort;
 	protected double amountOfFuel;
 	protected double ratioOfAccident;
 	protected double amountOfCargo;
@@ -30,9 +32,6 @@ public abstract class Ship {
 	protected double cashFlow;
 	protected double emissionedGas;
 	protected ShipStatus status;
-	protected BunkeringStatus bStatus;
-	protected LoadingStatus lStatus;
-	protected MaintenanceStatus mStatus;
 	protected int waitingTime;
 	protected double speed;
 	protected int time;
@@ -44,22 +43,57 @@ public abstract class Ship {
 		remainingDistance = 0;
 		cashFlow = 0;
 		emissionedGas = 0;
-		status = ShipStatus.BERTH;
-		bStatus = BunkeringStatus.NO;
-		mStatus = MaintenanceStatus.NO;
+		status = ShipStatus.WAIT;
 		waitingTime = 0;
 		time = 0;
+		berthingPort = null;
 	}
 	//Function
 	public void timeNext(){
 		this.time++;
 		switch(this.status){
-		case TRANSPORT:
-			transport();
-		case WAIT:
-			this.waitingTime ++;
-		case BERTH:
-			break;
+			case TRANSPORT:
+				if (remainingDistance > 0) transport();
+				if (remainingDistance == 0) {
+					Port port = this.schedule.get(0).getDestination();
+					PortFacility facility = port.checkBerthing(this);
+					if(facility == null) {
+						setShipStatus(ShipStatus.WAIT);
+						this.waitingTime ++;
+					}
+					if(facility != null){
+						facility.accept(this);
+						this.setBerthingPort(port);
+						this.appropriateRevenue();
+					}
+					
+				}
+				break;
+			case WAIT:
+				Port port = this.schedule.get(0).getDestination();
+				PortFacility facility = port.checkBerthing(this);
+				if(facility == null){
+					setShipStatus(ShipStatus.WAIT);
+					this.waitingTime ++;
+				}
+				if(!(facility == null)){
+					facility.accept(this);
+					this.setBerthingPort(port);
+					this.appropriateRevenue();
+				}
+				break;
+			case BERTH:
+				if(this.schedule.get(0).judgeEnd()){
+					if(this.schedule.size() > 1){
+						this.removeSchedule();
+						this.berthingPort.departure(this);
+						this.setBerthingPort(null);
+						this.setShipStatus(ShipStatus.TRANSPORT);
+						this.setRemainingDistance(PortNetwork.getDistance(this.getSchedule().from,this.getSchedule().to));
+						
+					}
+				}
+				break;
 		}
 
 	}
@@ -89,7 +123,11 @@ public abstract class Ship {
 	}
 
 	public void setAmountOfFuel(double amountOfFuel) {
-		this.amountOfFuel = amountOfFuel;
+		if (amountOfFuel > this.fuelTank.capacity){
+			this.amountOfFuel = this.fuelTank.capacity;
+		}else{
+			this.amountOfFuel = amountOfFuel;
+		}
 	}
 
 	public double getRatioOfAccident() {
@@ -113,6 +151,12 @@ public abstract class Ship {
 	}
 	public ShipStatus getShipStatus(){
 		return this.status;
+	}
+	public void setBerthingPort(Port port){
+		this.berthingPort = port;
+	}
+	public Port getBerthingPort(){
+		return this.berthingPort;
 	}
 
 	public Hull getHull() {
@@ -166,15 +210,15 @@ public abstract class Ship {
 		return this.fuelTank.getFuelType();
 	}
 
-	public LoadingType getCargoType(){
+	public CargoType getCargoType(){
 		return this.cargoHold.getCargoType();
 	}
-	public Contract getLastSchedule(){
-		return this.schedule.get(this.schedule.size() - 1);
+	public Schedule getLastSchedule(){
+		if (this.schedule.size() == 0) return null;
+		else return this.schedule.get(this.schedule.size() - 1);
 	}
-	
-	
-	public Contract getContract(){
+	public Schedule getSchedule(){
+		if (this.schedule.size() == 0) return null;
 		return this.schedule.get(0);
 	}
 	
@@ -217,14 +261,30 @@ public abstract class Ship {
 		public abstract double calcBHP(double v);
 	}
 
-	public abstract class Contract{
+	public abstract class Schedule{
+		//When ~ When
 		private int startTime;
 		private int endTime;
-		private Port departure;
-		private Port destination;
-		private LoadingType cargoType;
-		private double cargoAmount;
-		protected double freightRate;
+		//From / To
+		private Port from;
+		private Port to;
+		//Objective
+		//loading property
+		protected boolean isLoading;
+		private double loadingAmount;
+		private CargoType loadingType;
+		//bunkering property
+		protected boolean isBunkering;
+		private double bunkeringAmount;
+		private FuelType fuelType;
+		//unloading property
+		protected boolean isUnLoading;
+		private double unloadingAmount;
+		private CargoType unloadingType;
+		//Contract property
+		protected double fee;
+		protected double penalty;
+		
 
 		public int getStartTime() {
 			return startTime;
@@ -239,46 +299,110 @@ public abstract class Ship {
 			this.endTime = endTime;
 		}
 		public Port getDeparture() {
-			return departure;
+			return from;
 		}
 		public void setDeparture(Port departure) {
-			this.departure = departure;
+			this.from = departure;
 		}
 		public Port getDestination() {
-			return destination;
+			return to;
 		}
 		public void setDestination(Port destination) {
-			this.destination = destination;
+			this.to = destination;
 		}
 		
-		public LoadingType getCargoType() {
-			return cargoType;
+		
+		public Port getFrom() {
+			return from;
 		}
-		public void setCargoType(LoadingType cargoType) {
-			this.cargoType = cargoType;
+		public void setFrom(Port from) {
+			this.from = from;
 		}
-		public double getCargoAmount() {
-			return cargoAmount;
+		public Port getTo() {
+			return to;
 		}
-		public void setCargoAmount(double cargoAmount) {
-			this.cargoAmount = cargoAmount;
+		public void setTo(Port to) {
+			this.to = to;
 		}
-		public void setFreightRate(double freightRate){
-			this.freightRate = freightRate;
+		public boolean isLoading() {
+			return isLoading;
+		}
+		public void setLoading(boolean isLoading) {
+			this.isLoading = isLoading;
+		}
+		public double getLoadingAmount() {
+			return loadingAmount;
+		}
+		public void setLoadingAmount(double loadingAmount) {
+			this.loadingAmount = loadingAmount;
+		}
+		public CargoType getLoadingType() {
+			return loadingType;
+		}
+		public void setLoadingType(CargoType loadingType) {
+			this.loadingType = loadingType;
+		}
+		public boolean isBunkering() {
+			return isBunkering;
+		}
+		public void setBunkering(boolean isBunkering) {
+			this.isBunkering = isBunkering;
+		}
+		public double getBunkeringAmount() {
+			return bunkeringAmount;
+		}
+		public void setBunkeringAmount(double bunkeringAmount) {
+			this.bunkeringAmount = bunkeringAmount;
+		}
+		public FuelType getFuelType() {
+			return fuelType;
+		}
+		public void setFuelType(FuelType fuelType) {
+			this.fuelType = fuelType;
+		}
+		public boolean isUnLoading() {
+			return isUnLoading;
+		}
+		public void setUnLoading(boolean isUnLoading) {
+			this.isUnLoading = isUnLoading;
+		}
+		public double getUnloadingAmount() {
+			return unloadingAmount;
+		}
+		public void setUnloadingAmount(double unloadingAmount) {
+			this.unloadingAmount = unloadingAmount;
+		}
+		public CargoType getUnloadingType() {
+			return unloadingType;
+		}
+		public void setUnloadingType(CargoType unloadingType) {
+			this.unloadingType = unloadingType;
+		}
+		public double getFee() {
+			return fee;
+		}
+		public void setFee(double fee) {
+			this.fee = fee;
+		}
+		public void setPenalty(double penalty) {
+			this.penalty = penalty;
+		}
+		public double getPenalty(){
+			return this.penalty;
 		}
 		public abstract double getIncome() ;
-		public abstract double getPenalty(int time);
+		public abstract boolean judgeEnd();
 		
 		
 	}
 
 	public abstract class CargoHold{
-		private LoadingType cargoType;
+		private CargoType cargoType;
 		private Double capacity;
-		public LoadingType getCargoType() {
+		public CargoType getCargoType() {
 			return cargoType;
 		}
-		public void setCargoType(LoadingType cargoType) {
+		public void setCargoType(CargoType cargoType) {
 			this.cargoType = cargoType;
 		}
 		public Double getCapacity() {
@@ -288,6 +412,10 @@ public abstract class Ship {
 			this.capacity = capacity;
 		}
 
+	}
+
+	public double getMaximumCargoAmount() {
+		return this.cargoHold.getCapacity();
 	}
 
 	

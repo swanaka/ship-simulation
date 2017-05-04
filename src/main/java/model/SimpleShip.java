@@ -4,8 +4,8 @@ package model;
 
 import java.util.ArrayList;
 
+import model.Status.CargoType;
 import model.Status.FuelType;
-import model.Status.LoadingType;
 import model.Status.ShipStatus;
 
 
@@ -18,17 +18,20 @@ public class SimpleShip extends Ship {
 
 	
 	
-	public SimpleShip(double speed, LoadingType cargoType, double cargoAmount, double foc, double fuelCapacity, FuelType fuelType){
+	public SimpleShip(double speed, CargoType cargoType, double cargoAmount, double foc, double fuelCapacity, FuelType fuelType, Port initialPort){
 		super();
-		this.schedule = new ArrayList<Contract>();
+		this.schedule = new ArrayList<Schedule>();
 		this.speed = speed;
 		this.fuelTank = new HFOTank();
 		this.fuelTank.setCapacity(fuelCapacity);
 		this.fuelTank.setFuelType(fuelType);
+		this.setAmountOfFuel(fuelCapacity);
 		this.cargoHold = new VLCCCargo();
 		this.cargoHold.setCapacity(cargoAmount);
 		this.cargoHold.setCargoType(cargoType);
 		this.engine = new SimpleEngine(foc);
+		Schedule initialSchedule = new SimpleSchedule(0,0,initialPort,initialPort);
+		this.schedule.add(initialSchedule);
 	}
 
 	@Override
@@ -50,20 +53,20 @@ public class SimpleShip extends Ship {
 		super.remainingDistance -= actualDis;
 		super.amountOfFuel -= foc;
 		super.emissionedGas += calcGasEmission(foc);
-		
-		//5. Update status
-		if (remainingDistance < 0){
-			this.status = ShipStatus.WAIT;
-			this.schedule.get(0).getDestination().addWaitingShips(this);
-		}
 
 	}
 	
 	@Override
 	public void appropriateRevenue() {
-		Contract contract = super.schedule.get(0);
-		double revenue = contract.getIncome() + contract.getPenalty(super.time);
-		super.owner.addCashFlow(revenue);
+		//TO-DO
+		if(this.schedule.size() == 0) return;
+		else {
+			Schedule currentSchedule = this.schedule.get(0);
+			if (currentSchedule.getDestination().equals(this.berthingPort)){
+				double revenue = currentSchedule.getIncome();
+				super.owner.addCashFlow(revenue);
+			}
+		}
 		
 	}
 	
@@ -94,30 +97,34 @@ public class SimpleShip extends Ship {
 	
 	}
 
-	public class OContract extends Contract{
-		
-		
-		private double penaltyRate;
+	public class SimpleSchedule extends Schedule{
 
-		private OContract(int startTime, int endTime, Port departure, Port destination){
-			super.setStartTime(startTime);
-			super.setEndTime(endTime);
-			super.setDeparture(departure);
-			super.setDestination(destination);
-
+		private SimpleSchedule(int startTime, int endTime, Port from, Port to){
+			this.setStartTime(startTime);
+			this.setEndTime(endTime);
+			this.setDeparture(from);
+			this.setDestination(to);
+			this.setBunkering(false);
+			this.setLoading(false);
+			this.setUnLoading(false);
+			this.penalty = 0;
+			this.fee = 0;
 		}
 
 		@Override
 		public double getIncome() {
-			return freightRate * super.getCargoAmount();
+			double income = fee * getUnloadingAmount();
+			double minus = 0;
+			if (time > super.getEndTime()){
+				 minus = penalty * (super.getEndTime() - time);
+			}
+			return income - minus;
 		}
 
 		@Override
-		public double getPenalty(int time) {
-			if (time > super.getEndTime()){
-				return penaltyRate * (super.getEndTime() - time);
-			}
-			else return 0;
+		public boolean judgeEnd() {
+			if(this.isBunkering == false && this.isLoading == false && this.isUnLoading == false) return true;
+			return false;
 		}
 		
 	}
@@ -127,14 +134,46 @@ public class SimpleShip extends Ship {
 
 	@Override
 	public void addSchedule(int startTime, int endTime, Port departure, Port destination, double amount) {
-		Contract contract = new OContract(startTime,endTime,departure,destination);
-		contract.setCargoAmount(amount);
+		Port previousPort = null;
+		if (this.getLastSchedule() == null) previousPort = this.berthingPort;
+		else previousPort = this.getLastSchedule().getDestination();
 		
+		if(previousPort.equals(departure)){
+			this.getLastSchedule().setLoading(true);
+			this.getLastSchedule().setLoadingType(this.getCargoType());
+			this.getLastSchedule().setLoadingAmount(amount);;
+			this.getLastSchedule().setBunkering(true);
+			this.getLastSchedule().setFuelType(this.getFuelType());
+			
+			Schedule schedule = new SimpleSchedule(startTime,endTime,departure,destination);
+			schedule.setUnLoading(true);
+			schedule.setUnloadingAmount(amount);
+			schedule.setUnloadingType(getCargoType());
+			this.schedule.add(schedule);
+		}else{
+			this.getLastSchedule().setBunkering(true);
+			this.getLastSchedule().setFuelType(this.getFuelType());
+			
+			Schedule schedule = new SimpleSchedule(startTime,endTime,departure,destination);
+			schedule.setLoading(true);
+			schedule.setLoadingAmount(amount);
+			schedule.setLoadingType(getCargoType());
+			schedule.setBunkering(true);
+			schedule.setFuelType(getFuelType());
+			this.schedule.add(schedule);
+			
+			schedule = new SimpleSchedule(startTime,endTime,departure,destination);
+			schedule.setUnLoading(true);
+			schedule.setUnloadingAmount(amount);
+			schedule.setUnloadingType(getCargoType());
+			this.schedule.add(schedule);
+		}
+
 	}
 
 	@Override
 	public void addFreightToSchedule(double freight) {
-		this.schedule.get(this.schedule.size() - 1).setFreightRate(freight);
+		this.schedule.get(this.schedule.size() - 1).setFee(freight);
 		
 	}
 

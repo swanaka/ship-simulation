@@ -1,6 +1,9 @@
 package model;
 
+import model.Status.CargoType;
+
 public class Freight{
+	private CargoType cargoType;
 	private double standardFreight;
 	private double freightRate;
 	
@@ -15,7 +18,9 @@ public class Freight{
 	protected int time;
 	private int counter = 0;
 	
-	public Freight(double upforStandard,double downforStandard,double pforStandard,double upforRate, double downforRate, double pforRate, double initialStandard, double initialRate){
+	public Freight(CargoType cargoType, double upforStandard,double downforStandard,double pforStandard,double upforRate, double downforRate, double pforRate, double initialStandard, double initialRate){
+		this.cargoType = cargoType;
+		
 		this.upforStandard = upforStandard;
 		this.downforStandard = downforStandard;
 		this.pforStandard = pforStandard;
@@ -51,5 +56,8 @@ public class Freight{
 	}
 	public double getPrice(){
 		return this.standardFreight * this.freightRate;
+	}
+	public CargoType getCargoType(){
+		return this.cargoType;
 	}
 }

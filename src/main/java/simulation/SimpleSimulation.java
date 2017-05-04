@@ -1,6 +1,8 @@
 package simulation;
 
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.poi.ss.usermodel.Cell;
@@ -8,6 +10,7 @@ import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.ss.util.WorkbookUtil;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
@@ -28,42 +31,45 @@ public class SimpleSimulation extends Simulation{
 	@Override
 	public void save(int now) {
 		//TO-DO
+		List<String> outputList = new ArrayList<String>();
 		List<Ship> ships = Fleet.getShips();
 		for(Ship ship : ships){
-			ship.getAmountOfCargo();
-			ship.getAmountOfFuel();
-			ship.getRemainingDistance();
-			ship.getCargoType();
-			//ship.getShipStatus().name();
+			outputList.add(String.valueOf(ship.getAmountOfCargo()));
+			outputList.add(String.valueOf(ship.getAmountOfFuel()));
+			outputList.add(String.valueOf(ship.getRemainingDistance()));
+			outputList.add(String.valueOf(ship.getCargoType()));
+			outputList.add(ship.getShipStatus().name());
 		}
 		//this.portNetwork.save(now);
 		double freight = Market.getFreight().get(0).getPrice();
+		outputList.add(String.valueOf(freight));
 		double fuelPrice = Market.getFuels().get(0).getPrice();
+		outputList.add(String.valueOf(fuelPrice));
 		
 		try{
-			Workbook wb = new XSSFWorkbook();
-			FileOutputStream fileOut = new FileOutputStream(OUTPUT_DIR + "result.xlsx");
-			String safeName = WorkbookUtil.createSafeSheetName("['aaa's test*?]");
-            Sheet sheet1 = wb.createSheet(safeName);
+			FileInputStream filein = new FileInputStream(OUTPUT_DIR + "result.xlsx");
+			Workbook wb = WorkbookFactory.create(filein);
+			String safeName = WorkbookUtil.createSafeSheetName("reseult");
+            Sheet sheet1 = wb.getSheet(safeName);
             
-            CreationHelper createHelper = wb.getCreationHelper();
+            //CreationHelper createHelper = wb.getCreationHelper();
             
             //Rows(行にあたる)を作る。Rowsは0始まり。
-            Row row = sheet1.createRow((short)0);
+            Row row = sheet1.createRow(now);
             //cell(列にあたる)を作って、そこに値を入れる。
-            Cell cell = row.createCell(0);
-            cell.setCellValue(1);
- 
-            row.createCell(1).setCellValue(1.2);
-            row.createCell(2).setCellValue(
-                 createHelper.createRichTextString("sample string"));
-            row.createCell(3).setCellValue(true);
-             
+            int i = 0;
+            for (String elem : outputList){
+            	row.createCell(i).setCellValue(elem);
+            	i++;
+            }
+            FileOutputStream fileOut = new FileOutputStream(OUTPUT_DIR + "result.xlsx");
             wb.write(fileOut);
-            fileOut.close();
+            filein.close();
+			fileOut.close();
 		}catch (Exception e){
 			e.printStackTrace();
 		}finally{
+			
 			
 		}
 		

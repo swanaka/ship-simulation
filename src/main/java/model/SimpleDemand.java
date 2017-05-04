@@ -1,6 +1,6 @@
 package model;
 
-import model.Status.LoadingType;
+import model.Status.CargoType;
 
 /**
  * Continer demand that is constant and happens at regular timing
@@ -18,16 +18,16 @@ public class SimpleDemand extends Demand{
 	
 	public SimpleDemand(){
 		super();
-		setCargoType(LoadingType.Container);
+		setCargoType(CargoType.HFO);
 		this.counter = 0;
 		this.limit = 30;
-		amount = 6600;
+		amount = 60000;
 		duration = 720;
 		departure = "Japan";
 		destination = "Los Angels";
 	}
 	
-	public SimpleDemand(LoadingType cargoType, int interval, double amount, int duration, String departure, String destination){
+	public SimpleDemand(CargoType cargoType, int interval, double amount, int duration, String departure, String destination){
 		super();
 		setCargoType(cargoType);
 		this.counter = 0;
@@ -42,11 +42,13 @@ public class SimpleDemand extends Demand{
 	public void timeNext() {
 		this.time++;
 		if (counter > this.limit){
-			super.setAmountOfCargo(amount);
-			super.setStartTime(super.time);
-			super.setEndTime(super.time + duration);
-			super.setDeparture(departure);
-			super.setDestination(destination);
+			setAmountOfCargo(amount);
+			setStartTime(super.time);
+			setEndTime(super.time + duration);
+			setDeparture(departure);
+			setDestination(destination);
+			this.isdemand = true;
+			
 			counter = 0;
 		}
 		counter ++;	
