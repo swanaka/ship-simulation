@@ -30,12 +30,12 @@ public class Main {
 
 	public static void main(String[] args){
 		
-		
+		int endTime = Integer.parseInt(args[0]);
 		loadInitialPorts("./data/port_config.csv");
 		loadMarketInfo("../../data/market_config.csv");
 		loadInitialFleet("../../data/ship_config.csv");
 		
-		Simulation simulation = new SimpleSimulation(365);
+		Simulation simulation = new SimpleSimulation(endTime);
 		System.out.println("Simulation Start");
 		simulation.execute();
 		System.out.println("Simulation End");
