@@ -149,6 +149,8 @@ public class SimpleShip extends Ship {
 			schedule.setUnLoading(true);
 			schedule.setUnloadingAmount(amount);
 			schedule.setUnloadingType(getCargoType());
+			schedule.setFee(-1);
+			schedule.setPenalty(-1);
 			this.schedule.add(schedule);
 		}else{
 			this.getLastSchedule().setBunkering(true);
@@ -166,14 +168,20 @@ public class SimpleShip extends Ship {
 			schedule.setUnLoading(true);
 			schedule.setUnloadingAmount(amount);
 			schedule.setUnloadingType(getCargoType());
+			schedule.setFee(-1);
+			schedule.setPenalty(-1);
 			this.schedule.add(schedule);
 		}
 
 	}
 
 	@Override
-	public void addFreightToSchedule(double freight) {
-		this.schedule.get(this.schedule.size() - 1).setFee(freight);
+	public void addContractToSchedule(double freight,double penalty) {
+		
+		for (Schedule sch :this.schedule){
+			if(sch.fee == -1) sch.setFee(freight);
+			if(sch.penalty == -1) sch.setPenalty(penalty);
+		}
 		
 	}
 

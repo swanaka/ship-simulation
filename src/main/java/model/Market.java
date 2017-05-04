@@ -77,6 +77,7 @@ public class Market {
 				String destination = demand.getDestination();
 				Port dep = PortNetwork.getPort(departure);
 				Port des = PortNetwork.getPort(destination);
+
 				//2. 間に合う船がいるかどうか調べる
 				List<Ship> ships = Fleet.getShips();
 				
@@ -112,8 +113,10 @@ public class Market {
 				}
 				//3. 運賃を決める
 				double freight = decideFreight(ships,assignedShip,fuels,demand);
+				double penalty = 0;
 				//4. Contractを作成する
-				makeContract(assignedShip,freight);
+				makeContract(assignedShip,freight,penalty);
+				demand.reset();
 			}
 			
 		}
@@ -157,11 +160,15 @@ public class Market {
 		}
 	}
 	private static double setScheduleToShip(Ship ship, int startTime, int endTime, Port departure, Port destination, double amount){
+		//一つ前の終了時間を取得
+		int previousEndTime = ship.getLastSchedule().getEndTime();
 		//対象の船の速度とポート間の距離を取得
 		double distance = PortNetwork.getDistance(departure, destination);
 		int time = ship.getTime(distance);
+		
 		//endTimeからstartTimeを計算
-		int start = endTime - time;
+		int start = previousEndTime + 24;
+		int end = start + time;
 		//startTime, endTime, departure, destination,amountを設定
 		double done = 0;
 		if (amount >= ship.getMaximumCargoAmount()){
@@ -169,7 +176,7 @@ public class Market {
 		}else{
 			done =  amount;
 		}
-		ship.addSchedule(start, endTime, departure,destination,done);
+		ship.addSchedule(start, end, departure,destination,done);
 		return done;
 	}
 	private static double decideFreight(List<Ship> ships, List<Ship> assignedShip,List<FuelPrice> fuels, Demand demand){
@@ -181,9 +188,9 @@ public class Market {
 		}
 		return -1;
 	}
-	private static void makeContract(List<Ship> ships, double freight){
+	private static void makeContract(List<Ship> ships, double freight, double penalty){
 		for (Ship ship: ships){
-			ship.addFreightToSchedule(freight);
+			ship.addContractToSchedule(freight,penalty);
 		}
 	}
 	

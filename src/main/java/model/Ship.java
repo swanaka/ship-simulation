@@ -83,7 +83,7 @@ public abstract class Ship {
 				}
 				break;
 			case BERTH:
-				if(this.schedule.get(0).judgeEnd()){
+				if(this.schedule.get(0).judgeEnd() && time >= this.schedule.get(1).startTime ){
 					if(this.schedule.size() > 1){
 						this.removeSchedule();
 						this.berthingPort.departure(this);
@@ -100,8 +100,9 @@ public abstract class Ship {
 	public abstract void transport();
 	public abstract void appropriateRevenue();
 	public abstract void addSchedule(int startTime, int endTime, Port departure, Port destination, double amount);
-	public abstract void addFreightToSchedule(double freight);
+	public abstract void addContractToSchedule(double freight,double penalty);
 	public abstract int getTime(double distance);
+	public abstract double estimateFuelAmount(Port departure, Port destination);
 
 	//Getter and Setter
 	public double getRemainingDistance() {
@@ -150,7 +151,13 @@ public abstract class Ship {
 	}
 
 	public void setAmountOfCargo(double amountOfCargo) {
+		if(amountOfCargo > this.cargoHold.getCapacity()){
+			this.amountOfCargo = this.cargoHold.getCapacity();
+		}else if (amountOfCargo < 0){
+			this.amountOfCargo = 0;
+		}else{
 		this.amountOfCargo = amountOfCargo;
+		}
 	}
 	
 	public void setShipStatus(ShipStatus status){
@@ -232,7 +239,7 @@ public abstract class Ship {
 	public void removeSchedule(){
 		this.schedule.remove(0);
 	}
-	public abstract double estimateFuelAmount(Port departure, Port destination);
+	
 	
 
 	//Abstract inner class

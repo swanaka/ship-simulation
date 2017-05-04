@@ -115,9 +115,9 @@ public class Main {
 		double probability = 0.539;
 		FuelPrice oilprice = new OilPrice(initialPrice,upFactor,downFactor,probability);
 
-		int limit = 2160;
-		double amount = 60000;
-		int duration = 2160;
+		int limit = 300;
+		double amount = 600000;
+		int duration = 800;
 		String departure = "Japan";
 		String destination = "Los Angels";
 		Demand demand = new SimpleDemand(cargoType,limit,amount,duration,departure,destination);

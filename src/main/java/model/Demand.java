@@ -4,16 +4,17 @@ import model.Status.CargoType;
 
 
 public abstract class Demand {
-	private CargoType cargoType;
-	private int startTime;
-	private int endTime;
-	private double amountOfCargo;
-	private String departure;
-	private String destination;
+	protected CargoType cargoType;
+	protected int startTime;
+	protected int endTime;
+	protected double amountOfCargo;
+	protected String departure;
+	protected String destination;
 	protected boolean isdemand;
 	protected int time;
 	
 	public abstract void timeNext();
+	public abstract void reset();
 	public boolean isDemand(){
 		return isdemand;
 	};

@@ -86,13 +86,13 @@ public class SimplePort extends Port {
 			
 			this.berthingShip.setAmountOfCargo(this.berthingShip.getAmountOfCargo() + loadingCapacity);
 			this.berthingShip.getSchedule().setLoadingAmount(berthingShip.getSchedule().getLoadingAmount()-loadingCapacity);
-			if (this.berthingShip.getSchedule().getLoadingAmount() < 0) this.berthingShip.getSchedule().setLoading(false);
+			if (this.berthingShip.getSchedule().getLoadingAmount() <= 0) this.berthingShip.getSchedule().setLoading(false);
 		}
 
 		public void unloading(){
 			this.berthingShip.setAmountOfCargo(this.berthingShip.getAmountOfCargo() - loadingCapacity);
 			this.berthingShip.getSchedule().setUnloadingAmount(berthingShip.getSchedule().getUnloadingAmount()-loadingCapacity);
-			if (this.berthingShip.getSchedule().getUnloadingAmount() < 0) this.berthingShip.getSchedule().setUnLoading(false);
+			if (this.berthingShip.getSchedule().getUnloadingAmount() <= 0) this.berthingShip.getSchedule().setUnLoading(false);
 		}
 
 		public boolean match(Ship ship){

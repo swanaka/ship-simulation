@@ -13,19 +13,8 @@ public class SimpleDemand extends Demand{
 	private int limit;
 	private double amount;
 	private int duration;
-	private String departure;
-	private String destination;
+
 	
-	public SimpleDemand(){
-		super();
-		setCargoType(CargoType.HFO);
-		this.counter = 0;
-		this.limit = 30;
-		amount = 60000;
-		duration = 720;
-		departure = "Japan";
-		destination = "Los Angels";
-	}
 	
 	public SimpleDemand(CargoType cargoType, int interval, double amount, int duration, String departure, String destination){
 		super();
@@ -41,17 +30,23 @@ public class SimpleDemand extends Demand{
 	@Override
 	public void timeNext() {
 		this.time++;
-		if (counter > this.limit){
+		if (counter == 1){
 			setAmountOfCargo(amount);
-			setStartTime(super.time);
-			setEndTime(super.time + duration);
+			setStartTime(this.time);
+			setEndTime(this.time + duration);
 			setDeparture(departure);
 			setDestination(destination);
 			this.isdemand = true;
-			
+		}
+		if (counter > this.limit){
 			counter = 0;
 		}
 		counter ++;	
+	}
+
+	@Override
+	public void reset() {
+		this.isdemand = false;
 	}
 	
 }
