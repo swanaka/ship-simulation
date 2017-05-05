@@ -1,4 +1,5 @@
 /bin/
+/doc/
 
 # Java
 *.class
