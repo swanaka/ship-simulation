@@ -57,8 +57,6 @@ public class SimpleSimulation extends Simulation{
 				sheet = wb.createSheet(safeName);
 			}
 
-
-
             //CreationHelper createHelper = wb.getCreationHelper();
 
             //Rows(行にあたる)を作る。Rowsは0始まり。
