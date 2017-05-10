@@ -123,7 +123,7 @@ public class SimplePort extends Port {
 			}
 			if(facility.berthingShip.equals(ship)){
 				facility.berthingShip = null;
-				// occupiedFlagの処理を追加
+				// occupiedFlagの処理を追加 KS
 				facility.occupiedFlag = 0;
 			}
 		}

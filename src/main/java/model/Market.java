@@ -85,29 +85,20 @@ public class Market {
 				List<Ship> assignedShip = new ArrayList<Ship>();
 				while(amount > 0){
 					double tmpFuel = -1;
-					double tmpTime = -1;
-					int tmpScheduleCount = -1;
 					Ship tmpShip = null;
 
 					for (Ship ship : ships){
 						if (cargoType == ship.getCargoType()){
-							//if (canTransport(ship,startTime,endTime,dep,des)){
-							int scheduleCount = ship.schedule.size();
-							// 目的港への到着時刻を算出
-							double estimateFinishTime = calcFinishTimeTransport(ship,startTime,endTime,dep,des) ;
-							//単位貨物あたりの燃料はいくらか?
-							double estimateFuelCost = estimateFuelCost(ship,startTime,endTime,dep,des,amount);
-							// 間に合う船を主条件
-							if (estimateFinishTime < demand.endTime ){
-								if(tmpScheduleCount == -1 || scheduleCount < tmpScheduleCount){
-									tmpScheduleCount = scheduleCount;
-									if (tmpFuel == -1 || tmpFuel > estimateFuelCost){
-										tmpFuel = estimateFuelCost;
-										tmpShip = ship;
-									}
+							if (canTransport(ship,startTime,endTime,dep,des)){
+								//単位貨物あたりの燃料はいくらか?
+								double estimateFuelCost = estimateFuelCost(ship,startTime,endTime,dep,des,amount);
+								if (tmpFuel == -1 || tmpFuel > estimateFuelCost){
+									tmpFuel = estimateFuelCost;
+									tmpShip = ship;
 								}
 							}
 						}
+
 					}
 					if (tmpShip != null){
 						assignedShip.add(tmpShip);
@@ -151,31 +142,6 @@ public class Market {
 		//その時間とendTimeとを比較する
 		if (endTime < previousTime + sumTime) return false;
 		else return true;
-	}
-
-	private static double calcFinishTimeTransport(Ship ship, int startTime, int endTime, Port departure, Port destination){
-		//TO-DO actual behavior
-		//対象の船の最終予定時間と場所を取得
-		Port previousDestination = null;
-		int previousTime = 0;
-		if(ship.getLastSchedule() != null){
-			previousDestination = ship.getLastSchedule().getDestination();
-			previousTime = ship.getLastSchedule().getEndTime();
-		}else{
-			previousDestination = ship.getBerthingPort();
-			previousTime = ship.time;
-		}
-		//そこから出発地点まで来て、目的地まで最大船速で行く時間を計算(Loading、Bunkeringの時間を忘れない)
-		double preDistance = PortNetwork.getDistance(previousDestination, departure);
-		double distance = PortNetwork.getDistance(departure, destination);
-		int sumTime = ship.getTime(preDistance) + ship.getTime(distance) + departure.getTimeForReady(ship);
-		//その時間とendTimeとを比較する
-		if (endTime < previousTime + sumTime) {
-			// Demandの締切に間に合わない場合は、仮想的に納期の10倍の数値を与える。
-			return endTime * 10.0;
-		}else{
-			return previousTime + sumTime;
-		}
 	}
 
 	private static double estimateFuelCost(Ship ship, int startTime, int endTime, Port departure, Port destination, double amount){

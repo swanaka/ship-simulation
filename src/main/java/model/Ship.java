@@ -63,6 +63,7 @@ public abstract class Ship {
 						this.setBerthingPort(port);
 						this.appropriateRevenue();
 					}
+
 				}
 				break;
 			case WAIT:
@@ -79,22 +80,15 @@ public abstract class Ship {
 				}
 				break;
 			case BERTH:
-				if(this.schedule.size() >= 2){
-					if(this.schedule.get(0).judgeEnd() && time >= this.schedule.get(1).startTime){
+				if(this.schedule.get(0).judgeEnd() && time >= this.schedule.get(1).startTime ){
+					if(this.schedule.size() > 1){
 						this.removeSchedule();
 						this.berthingPort.departure(this);
 						this.setBerthingPort(null);
 						this.setShipStatus(ShipStatus.TRANSPORT);
 						this.setRemainingDistance(PortNetwork.getDistance(this.getSchedule().from,this.getSchedule().to));
+
 					}
-				}else if(this.schedule.get(0).judgeEnd()){
-					// Demand無しの状態を追加
-					setShipStatus(ShipStatus.WAIT);
-					this.berthingPort.departure(this);
-					this.setRemainingDistance(0.0);
-					this.removeSchedule();
-					this.setWaitSchedule(this.getBerthingPort(), this.getBerthingPort());
-					this.setBerthingPort(null);
 				}
 				break;
 		}
@@ -106,8 +100,6 @@ public abstract class Ship {
 	public abstract void addContractToSchedule(double freight,double penalty);
 	public abstract int getTime(double distance);
 	public abstract double estimateFuelAmount(Port departure, Port destination);
-
-	public abstract void setWaitSchedule(Port departure, Port destination) ;
 
 	//Getter and Setter
 	public double getRemainingDistance() {

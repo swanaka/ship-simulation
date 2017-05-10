@@ -155,7 +155,7 @@ public class SimpleShip extends Ship {
 			this.getLastSchedule().setBunkering(true);
 			this.getLastSchedule().setFuelType(this.getFuelType());
 
-			// departureをprevious portに変更
+			// departureをprevious portに変更 KS
 			Schedule schedule = new SimpleSchedule(startTime,endTime,previousPort,departure);
 			schedule.setLoading(true);
 			schedule.setLoadingAmount(amount);
@@ -172,12 +172,6 @@ public class SimpleShip extends Ship {
 			schedule.setPenalty(-1);
 			this.schedule.add(schedule);
 		}
-	}
-
-	@Override
-	public void setWaitSchedule(Port departure, Port destination) {
-		Schedule waitSchedule = new SimpleSchedule(0,0,departure,destination);
-		this.schedule.add(waitSchedule);
 	}
 
 	@Override
