@@ -6,7 +6,6 @@ import java.util.ArrayList;
 
 import model.Status.CargoType;
 import model.Status.FuelType;
-import model.Status.ShipStatus;
 
 
 /*
@@ -16,8 +15,6 @@ import model.Status.ShipStatus;
  */
 public class SimpleShip extends Ship {
 
-	
-	
 	public SimpleShip(double speed, CargoType cargoType, double cargoAmount, double foc, double fuelCapacity, FuelType fuelType, Port initialPort, double operatingCost){
 		super();
 		this.schedule = new ArrayList<Schedule>();
@@ -40,7 +37,7 @@ public class SimpleShip extends Ship {
 
 //		// 1. Get planned distance
 //		int plannedTime = super.schedule.get(0).getEndTime();
-//		double distance = super.remainingDistance; 
+//		double distance = super.remainingDistance;
 //		double plannedDistance = calcPlannedDistance(now, plannedTime, distance);
 
 		// 2. Calculate ship speed
@@ -67,7 +64,7 @@ public class SimpleShip extends Ship {
 		this.acumCost += this.getOperatingCost();
 
 	}
-	
+
 	@Override
 	public void appropriateRevenue() {
 		//TO-DO
@@ -80,9 +77,9 @@ public class SimpleShip extends Ship {
 				this.addCashFlow(revenue);
 			}
 		}
-		
+
 	}
-	
+
 
 //	private double calcActualDistance(double distance){
 //		return distance;
@@ -111,19 +108,19 @@ public class SimpleShip extends Ship {
 		this.sox += foc * soxcoeff;
 		this.co2 += foc * co2coeff;
 	}
-	
+
 	private class SimpleEngine extends Engine{
 		private double foc;
-		
+
 		private SimpleEngine(double foc){
 			this.foc = foc;
 		}
-		
+
 		public double calcFOC(double v){
 			return foc;
 		}
-		
-	
+
+
 	}
 
 	public class SimpleSchedule extends Schedule{
@@ -156,9 +153,9 @@ public class SimpleShip extends Ship {
 			if(this.isBunkering == false && this.isLoading == false && this.isUnLoading == false) return true;
 			return false;
 		}
-		
+
 	}
-	
+
 	public class HFOTank extends FuelTank{}
 	public class VLCCCargo extends CargoHold{}
 
@@ -167,14 +164,14 @@ public class SimpleShip extends Ship {
 		Port previousPort = null;
 		if (this.getLastSchedule() == null) previousPort = this.berthingPort;
 		else previousPort = this.getLastSchedule().getDestination();
-		
+
 		if(previousPort.equals(departure)){
 			this.getLastSchedule().setLoading(true);
 			this.getLastSchedule().setLoadingType(this.getCargoType());
 			this.getLastSchedule().setLoadingAmount(amount);;
 			this.getLastSchedule().setBunkering(true);
 			this.getLastSchedule().setFuelType(this.getFuelType());
-			
+
 			Schedule schedule = new SimpleSchedule(startTime,endTime,departure,destination);
 			schedule.setUnLoading(true);
 			schedule.setUnloadingAmount(amount);
@@ -185,15 +182,16 @@ public class SimpleShip extends Ship {
 		}else{
 			this.getLastSchedule().setBunkering(true);
 			this.getLastSchedule().setFuelType(this.getFuelType());
-			
-			Schedule schedule = new SimpleSchedule(startTime,endTime,departure,destination);
+
+			// departureをprevious portに変更 KS
+			Schedule schedule = new SimpleSchedule(startTime,endTime,previousPort,departure);
 			schedule.setLoading(true);
 			schedule.setLoadingAmount(amount);
 			schedule.setLoadingType(getCargoType());
 			schedule.setBunkering(true);
 			schedule.setFuelType(getFuelType());
 			this.schedule.add(schedule);
-			
+
 			schedule = new SimpleSchedule(startTime,endTime,departure,destination);
 			schedule.setUnLoading(true);
 			schedule.setUnloadingAmount(amount);
@@ -202,17 +200,16 @@ public class SimpleShip extends Ship {
 			schedule.setPenalty(-1);
 			this.schedule.add(schedule);
 		}
-
 	}
 
 	@Override
 	public void addContractToSchedule(double freight,double penalty) {
-		
+
 		for (Schedule sch :this.schedule){
 			if(sch.fee == -1) sch.setFee(freight);
 			if(sch.penalty == -1) sch.setPenalty(penalty);
 		}
-		
+
 	}
 
 	@Override
@@ -229,7 +226,7 @@ public class SimpleShip extends Ship {
 		return foc * time;
 	}
 
-	
+
 
 
 }

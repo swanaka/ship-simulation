@@ -2,6 +2,7 @@ package model;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import model.Status.CargoType;
 
 public class Market {
@@ -10,7 +11,7 @@ public class Market {
 	protected static List<Freight> freights;
 
 	private static Market market = new Market();
-	
+
 	private Market(){
 		fuels = new ArrayList<FuelPrice>();
 		demands = new ArrayList<Demand>();
@@ -19,19 +20,19 @@ public class Market {
 	public static Market getInstance(){
 		return market;
 	}
-	
+
 	public static void addFuelPrice(FuelPrice fuelPrice){
 		fuels.add(fuelPrice);
 	}
-	
+
 	public static void addDemand(Demand demand){
 		demands.add(demand);
 	}
-	
+
 	public static void addFreight(Freight freight){
 		freights.add(freight);
 	}
-	
+
 	public static void timeNext(){
 		for(FuelPrice fuelPrice : fuels){
 			fuelPrice.timeNext();
@@ -42,13 +43,13 @@ public class Market {
 		for (Freight freight : freights){
 			freight.timeNext();
 		}
-		
+
 	}
-	
+
 	public static List<FuelPrice> getFuels(){
 		return fuels;
 	}
-	
+
 	public List<Demand> getDemands(){
 		return demands;
 	}
@@ -65,7 +66,7 @@ public class Market {
 	}
 
 	public static void addContract() {
-		
+
 		for(Demand demand : demands){
 			if (!demand.isDemand()) continue;
 			else{//1.まずはdemandをほどく
@@ -80,12 +81,12 @@ public class Market {
 
 				//2. 間に合う船がいるかどうか調べる
 				List<Ship> ships = Fleet.getShips();
-				
+
 				List<Ship> assignedShip = new ArrayList<Ship>();
 				while(amount > 0){
 					double tmpFuel = -1;
 					Ship tmpShip = null;
-					
+
 					for (Ship ship : ships){
 						if (cargoType == ship.getCargoType()){
 							if (canTransport(ship,startTime,endTime,dep,des)){
@@ -97,19 +98,19 @@ public class Market {
 								}
 							}
 						}
-						
+
 					}
 					if (tmpShip != null){
 						assignedShip.add(tmpShip);
 						//スケジュールを設定する
 						double done = setScheduleToShip(tmpShip,startTime,endTime,dep,des,amount);
-						
+
 						//Reset
 						amount = amount -done;
 					}else{
 						break;
 					}
-					
+
 				}
 				//3. 運賃を決める
 				double freight = decideFreight(ships,assignedShip,fuels,demand);
@@ -118,7 +119,7 @@ public class Market {
 				makeContract(assignedShip,freight,penalty);
 				demand.reset();
 			}
-			
+
 		}
 
 	}
@@ -142,6 +143,7 @@ public class Market {
 		if (endTime < previousTime + sumTime) return false;
 		else return true;
 	}
+
 	private static double estimateFuelCost(Ship ship, int startTime, int endTime, Port departure, Port destination, double amount){
 		//TO-DO actual behavior
 		//対象の船の最終予定時間と場所を取得
@@ -165,7 +167,7 @@ public class Market {
 		//対象の船の速度とポート間の距離を取得
 		double distance = PortNetwork.getDistance(departure, destination);
 		int time = ship.getTime(distance);
-		
+
 		//endTimeからstartTimeを計算
 		int start = previousEndTime + 24;
 		int end = start + time;
@@ -193,8 +195,8 @@ public class Market {
 			ship.addContractToSchedule(freight,penalty);
 		}
 	}
-	
-	
-	
-	
+
+
+
+
 }

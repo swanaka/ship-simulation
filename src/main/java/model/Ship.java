@@ -3,11 +3,8 @@ package model;
 import java.util.List;
 
 import model.Port.PortFacility;
-import model.Status.BunkeringStatus;
 import model.Status.CargoType;
 import model.Status.FuelType;
-import model.Status.LoadingStatus;
-import model.Status.MaintenanceStatus;
 import model.Status.ShipStatus;
 import util.Location;
 
@@ -75,7 +72,7 @@ public abstract class Ship {
 						this.setBerthingPort(port);
 						this.appropriateRevenue();
 					}
-					
+
 				}
 				break;
 			case WAIT:
@@ -99,7 +96,7 @@ public abstract class Ship {
 						this.setBerthingPort(null);
 						this.setShipStatus(ShipStatus.TRANSPORT);
 						this.setRemainingDistance(PortNetwork.getDistance(this.getSchedule().from,this.getSchedule().to));
-						
+
 					}
 				}
 				break;
@@ -173,7 +170,7 @@ public abstract class Ship {
 		this.amountOfCargo = amountOfCargo;
 		}
 	}
-	
+
 	public void setShipStatus(ShipStatus status){
 		this.status = status;
 	}
@@ -256,12 +253,12 @@ public abstract class Ship {
 		if (this.schedule.size() == 0) return null;
 		return this.schedule.get(0);
 	}
-	
+
 	public void removeSchedule(){
 		this.schedule.remove(0);
 	}
-	
-	
+
+
 
 	//Abstract inner class
 	public abstract class Hull{
@@ -289,7 +286,7 @@ public abstract class Ship {
 		public void setCapacity(double capacity) {
 			this.capacity = capacity;
 		}
-		
+
 	}
 
 	public abstract class Propeller{
@@ -319,7 +316,7 @@ public abstract class Ship {
 		//Contract property
 		protected double fee;
 		protected double penalty;
-		
+
 
 		public int getStartTime() {
 			return startTime;
@@ -345,8 +342,8 @@ public abstract class Ship {
 		public void setDestination(Port destination) {
 			this.to = destination;
 		}
-		
-		
+
+
 		public Port getFrom() {
 			return from;
 		}
@@ -427,8 +424,8 @@ public abstract class Ship {
 		}
 		public abstract double getIncome() ;
 		public abstract boolean judgeEnd();
-		
-		
+
+
 	}
 
 	public abstract class CargoHold{
@@ -453,7 +450,7 @@ public abstract class Ship {
 		return this.cargoHold.getCapacity();
 	}
 
-	
+
 
 
 }
