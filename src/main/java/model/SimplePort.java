@@ -2,22 +2,19 @@ package model;
 
 import java.util.HashMap;
 
-
-import model.Status.FuelType;
-
 import model.Status.CargoType;
-
+import model.Status.FuelType;
 import model.Status.ShipStatus;
 
 public class SimplePort extends Port {
-	
+
 	public SimplePort(String name){
 		super(name);
 		PortOperator operator = new SimplePortOperator(name);
 		this.operator = operator;
 	}
-	
-	
+
+
 	@Override
 	public void addPortFacility(HashMap<String, String> param){
 		System.out.println(param.get("FuelType"));
@@ -29,14 +26,14 @@ public class SimplePort extends Port {
 		PortFacility facility = new SimplePortFacitliy(fuelType, loadingType, bunkeringCapacity, loadingCapacity, berthingFee);
 		super.facilities.add(facility);
 	}
-	
+
 	@Override
 	public void addPortFacilities(HashMap<String, String>param, int num){
 		for (int i=0;i<num;i++){
 			addPortFacility(param);
 		}
 	}
-	
+
 	@Override
 	public void addPortFacilities(HashMap<String, String>[] paramList){
 		for (HashMap<String, String> param : paramList){
@@ -56,10 +53,10 @@ public class SimplePort extends Port {
 
 	//InnerClass
 	private class SimplePortFacitliy extends PortFacility{
-		
+
 		private double berthingFee;
 
-		public SimplePortFacitliy(FuelType fuelType, CargoType loadingType, double bunkeringCapacity, double loadingCapacity, 
+		public SimplePortFacitliy(FuelType fuelType, CargoType loadingType, double bunkeringCapacity, double loadingCapacity,
 				double berthingFee){
 			super.occupiedFlag = 0;
 			super.bunkeringCapacity = bunkeringCapacity;
@@ -72,18 +69,18 @@ public class SimplePort extends Port {
 		public void accept(Ship ship){
 			this.berthingShip = ship;
 			ship.setShipStatus(ShipStatus.BERTH);
+			this.occupiedFlag = 1;
 		}
+
 		public void berthing(){
 			if(berthingShip.getSchedule().isLoading)loading();
 			if(berthingShip.getSchedule().isUnLoading) unloading();
 			if(berthingShip.getSchedule().isBunkering) bunkering();
 			berthingShip.owner.addCashFlow(-1*this.berthingFee);
 			getOperator().addCashFlow(this.berthingFee);
-				
-			
 		}
+
 		public void loading(){
-			
 			this.berthingShip.setAmountOfCargo(this.berthingShip.getAmountOfCargo() + loadingCapacity);
 			this.berthingShip.getSchedule().setLoadingAmount(berthingShip.getSchedule().getLoadingAmount()-loadingCapacity);
 			if (this.berthingShip.getSchedule().getLoadingAmount() <= 0) this.berthingShip.getSchedule().setLoading(false);
@@ -109,7 +106,6 @@ public class SimplePort extends Port {
 				this.berthingShip.getSchedule().setBunkering(false);
 			}
 		}
-
 	}
 
 	@Override
@@ -122,11 +118,16 @@ public class SimplePort extends Port {
 	@Override
 	public void departure(Ship ship) {
 		for(PortFacility facility : facilities){
+			if(facility.berthingShip == null){
+				continue;
+			}
 			if(facility.berthingShip.equals(ship)){
 				facility.berthingShip = null;
+				// occupiedFlagの処理を追加
+				facility.occupiedFlag = 0;
 			}
 		}
-		
+
 	}
 
 }

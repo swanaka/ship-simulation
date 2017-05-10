@@ -3,11 +3,8 @@ package model;
 import java.util.List;
 
 import model.Port.PortFacility;
-import model.Status.BunkeringStatus;
 import model.Status.CargoType;
 import model.Status.FuelType;
-import model.Status.LoadingStatus;
-import model.Status.MaintenanceStatus;
 import model.Status.ShipStatus;
 import util.Location;
 
@@ -35,7 +32,7 @@ public abstract class Ship {
 	protected int waitingTime;
 	protected double speed;
 	protected int time;
-	
+
 	public Ship(){
 		amountOfFuel = 0;
 		ratioOfAccident = 0;
@@ -66,7 +63,6 @@ public abstract class Ship {
 						this.setBerthingPort(port);
 						this.appropriateRevenue();
 					}
-					
 				}
 				break;
 			case WAIT:
@@ -83,15 +79,22 @@ public abstract class Ship {
 				}
 				break;
 			case BERTH:
-				if(this.schedule.get(0).judgeEnd() && time >= this.schedule.get(1).startTime ){
-					if(this.schedule.size() > 1){
+				if(this.schedule.size() >= 2){
+					if(this.schedule.get(0).judgeEnd() && time >= this.schedule.get(1).startTime){
 						this.removeSchedule();
 						this.berthingPort.departure(this);
 						this.setBerthingPort(null);
 						this.setShipStatus(ShipStatus.TRANSPORT);
 						this.setRemainingDistance(PortNetwork.getDistance(this.getSchedule().from,this.getSchedule().to));
-						
 					}
+				}else if(this.schedule.get(0).judgeEnd()){
+					// Demand無しの状態を追加
+					setShipStatus(ShipStatus.WAIT);
+					this.berthingPort.departure(this);
+					this.setRemainingDistance(0.0);
+					this.removeSchedule();
+					this.setWaitSchedule(this.getBerthingPort(), this.getBerthingPort());
+					this.setBerthingPort(null);
 				}
 				break;
 		}
@@ -103,6 +106,8 @@ public abstract class Ship {
 	public abstract void addContractToSchedule(double freight,double penalty);
 	public abstract int getTime(double distance);
 	public abstract double estimateFuelAmount(Port departure, Port destination);
+
+	public abstract void setWaitSchedule(Port departure, Port destination) ;
 
 	//Getter and Setter
 	public double getRemainingDistance() {
@@ -159,7 +164,7 @@ public abstract class Ship {
 		this.amountOfCargo = amountOfCargo;
 		}
 	}
-	
+
 	public void setShipStatus(ShipStatus status){
 		this.status = status;
 	}
@@ -235,12 +240,12 @@ public abstract class Ship {
 		if (this.schedule.size() == 0) return null;
 		return this.schedule.get(0);
 	}
-	
+
 	public void removeSchedule(){
 		this.schedule.remove(0);
 	}
-	
-	
+
+
 
 	//Abstract inner class
 	public abstract class Hull{
@@ -268,7 +273,7 @@ public abstract class Ship {
 		public void setCapacity(double capacity) {
 			this.capacity = capacity;
 		}
-		
+
 	}
 
 	public abstract class Propeller{
@@ -298,7 +303,7 @@ public abstract class Ship {
 		//Contract property
 		protected double fee;
 		protected double penalty;
-		
+
 
 		public int getStartTime() {
 			return startTime;
@@ -324,8 +329,8 @@ public abstract class Ship {
 		public void setDestination(Port destination) {
 			this.to = destination;
 		}
-		
-		
+
+
 		public Port getFrom() {
 			return from;
 		}
@@ -406,8 +411,8 @@ public abstract class Ship {
 		}
 		public abstract double getIncome() ;
 		public abstract boolean judgeEnd();
-		
-		
+
+
 	}
 
 	public abstract class CargoHold{
@@ -432,7 +437,7 @@ public abstract class Ship {
 		return this.cargoHold.getCapacity();
 	}
 
-	
+
 
 
 }
