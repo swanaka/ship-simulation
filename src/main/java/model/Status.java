@@ -30,7 +30,9 @@ public class Status {
 	public enum FuelType{
 		OIL("Oil"), 
 		LNG("LNG"), 
-		METHANOL("METHANOL");
+		METHANOL("METHANOL"),
+		HFO("HFO"),
+		LSFO("LSFO");
 		
 		private final String name;
 		private FuelType(final String name){

@@ -51,8 +51,9 @@ public class Main {
 		double fuelCapacity = 5000;
 		FuelType fuelType = FuelType.OIL;
 		Port initialPort = PortNetwork.getPort("Japan");
+		double cost = 0;
 		
-		Ship ship = new SimpleShip(speed, cargoType, cargoAmount, foc, fuelCapacity, fuelType, initialPort);
+		Ship ship = new SimpleShip(speed, cargoType, cargoAmount, foc, fuelCapacity, fuelType, initialPort, cost);
 		ShipOperator operator = new SimpleShipOperator("NYK");
 		ship.setOwner(operator);
 		Fleet.add(ship);

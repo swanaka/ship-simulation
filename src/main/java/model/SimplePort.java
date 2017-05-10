@@ -90,6 +90,11 @@ public class SimplePort extends Port {
 		}
 
 		public void unloading(){
+			if(this.berthingShip.getAmountOfCargo() < loadingCapacity){
+				this.berthingShip.totalCargo += this.berthingShip.getAmountOfCargo();
+			}else{
+				this.berthingShip.totalCargo += loadingCapacity;
+			}
 			this.berthingShip.setAmountOfCargo(this.berthingShip.getAmountOfCargo() - loadingCapacity);
 			this.berthingShip.getSchedule().setUnloadingAmount(berthingShip.getSchedule().getUnloadingAmount()-loadingCapacity);
 			if (this.berthingShip.getSchedule().getUnloadingAmount() <= 0) this.berthingShip.getSchedule().setUnLoading(false);
