@@ -32,7 +32,7 @@ public class Main {
 		int endTime = Integer.parseInt(args[0]);
 		loadInitialPorts("./data/port_config.csv");
 		//loadMarketInfo("./../data/market_config.csv");
-		loadMarketInfoFromCSV("./data/freight_config.csv","./data/oilprice_config.csv","./data/demand_config.csv");
+		loadMarketInfoFromCSV("./data/freight_config.csv","./data/fuelprice_config.csv","./data/demand_config.csv");
 		//loadInitialFleet("../../data/ship_config.csv");
 		loadInitialFleetFromCSV("./data/fleet_config.csv");
 
@@ -62,7 +62,8 @@ public class Main {
 
 	private static void loadInitialFleetFromCSV(String filePath){
 		List<String[]> data =CSVReader.forGeneral(filePath);
-		int shipCount = 0;
+		//int shipCount = 0;
+		ShipOperator operator = new SimpleShipOperator("NYK");
 		for (int i=0;i<data.size();i++){
 			if (data.get(i)[0].equals( "shipName")){
 				// Input ship data from ship data file "ship_config_2.csv"
@@ -77,15 +78,15 @@ public class Main {
 				double cost = Double.parseDouble(data.get(i+3)[7]);
 				// Make instance of SimpleShip class using above input data
 				Ship ship = new SimpleShip(speed, cargoType, cargoAmount, foc, fuelCapacity, fuelType, initialPort, cost);
+				ship.setName(name);
 				// Make instance of ShipOperator class using input data
-				ShipOperator operator = new SimpleShipOperator(data.get(i+5)[0]);
+				//ShipOperator operator = new SimpleShipOperator(data.get(i+5)[0]);
 				ship.setOwner(operator);
-				int numOfShips = Integer.parseInt(data.get(i+6)[0]);
+				//int numOfShips = Integer.parseInt(data.get(i+6)[0]);
 				Fleet.add(ship);
 				// Move plus 4 lines in Reading CSV files. (Read next ship data)
 				i = i + 4;
-				shipCount ++;
-				System.out.println(shipCount);
+				//shipCount ++;
 			}
 		}
 	}
@@ -159,7 +160,7 @@ public class Main {
 //		Market.addFreight(freight);
 //	}
 
-	private static void loadMarketInfoFromCSV(String freightFilePath, String oilpriceFilePath, String demandFilePath){
+	private static void loadMarketInfoFromCSV(String freightFilePath, String fuelpriceFilePath, String demandFilePath){
 		List<String[]> data = CSVReader.forGeneral(freightFilePath);
 		Freight freight = null;
 		for (int i=0;i<data.size();i++){
@@ -184,7 +185,7 @@ public class Main {
 
 		data = null;
 		double coeff = 1.75;
-		data = CSVReader.forGeneral(oilpriceFilePath);
+		data = CSVReader.forGeneral(fuelpriceFilePath);
 		FuelPrice fuelprice = null;
 		for (int i=0;i<data.size();i++){
 			if (data.get(i)[0].equals( "FuelpriceName")){
@@ -202,12 +203,17 @@ public class Main {
 						fuelprice.setFuelType(fuelType);
 						break;
 					case LSFO:
+						coeff = Double.parseDouble(data.get(i+3)[0]);
 						DependedFuel fuel = new DependedFuel();
 						fuel.setCoeff(coeff);
 						fuel.setFuelType(fuelType);
 						fuelprice = (FuelPrice) fuel;
+						break;
+					default:
+						;
 						
 				}
+				i = i + 4;
 				
 
 			
