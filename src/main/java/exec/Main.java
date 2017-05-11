@@ -104,7 +104,7 @@ public class Main {
 				String bunkeringCapacity = data.get(i+3)[2];
 				String loadingCapacity = data.get(i+3)[3];
 				String berthingFee = data.get(i+3)[4];
-				int numOfPorts = Integer.parseInt(data.get(i+4)[0]);
+				int numOfPortFacilities = Integer.parseInt(data.get(i+4)[0]);
 				HashMap<String, String> param = new HashMap<String, String>();
 				param.put("FuelType", fuelType);
 				param.put("LoadingType", loadingType);
@@ -112,11 +112,9 @@ public class Main {
 				param.put("LoadingCapacity", loadingCapacity);
 				param.put("BerthingFee", berthingFee);
 				Port port = new SimplePort(name);
-				port.addPortFacilities(param,numOfPorts);
+				port.addPortFacilities(param,numOfPortFacilities);
 				ports.add(port);
-				i = i + 4;
 				portCount ++;
-				System.out.println(portCount);
 			}
 			if (data.get(i)[0].equals("RouteMatrix")){
 				routeMatrix = new double[portCount][portCount];

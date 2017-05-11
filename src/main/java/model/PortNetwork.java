@@ -44,7 +44,7 @@ public class PortNetwork {
 	public void remove(Port port){
 		//TO-DO
 	}
-	public List<Port> getPorts() {
+	public static List<Port> getPorts() {
 		return portList;
 	}
 	public static void setPortSettings(List<Port> pList,double[][] route){

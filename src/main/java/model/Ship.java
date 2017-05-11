@@ -89,7 +89,8 @@ public abstract class Ship {
 				}
 				break;
 			case BERTH:
-				if(this.schedule.get(0).judgeEnd() && time >= this.schedule.get(1).startTime ){
+				if(this.schedule.size() <= 1);
+				else if(this.schedule.get(0).judgeEnd() && time >= this.schedule.get(1).startTime ){
 					if(this.schedule.size() > 1){
 						this.removeSchedule();
 						this.berthingPort.departure(this);
@@ -102,6 +103,54 @@ public abstract class Ship {
 				break;
 		}
 
+	}
+	public double getNox() {
+		return nox;
+	}
+	public void setNox(double nox) {
+		this.nox = nox;
+	}
+	public double getSox() {
+		return sox;
+	}
+	public void setSox(double sox) {
+		this.sox = sox;
+	}
+	public double getCo2() {
+		return co2;
+	}
+	public void setCo2(double co2) {
+		this.co2 = co2;
+	}
+	public int getWaitingTime() {
+		return waitingTime;
+	}
+	public void setWaitingTime(int waitingTime) {
+		this.waitingTime = waitingTime;
+	}
+	public double getTotalFuel() {
+		return totalFuel;
+	}
+	public void setTotalFuel(double totalFuel) {
+		this.totalFuel = totalFuel;
+	}
+	public double getTotalDistance() {
+		return totalDistance;
+	}
+	public void setTotalDistance(double totalDistance) {
+		this.totalDistance = totalDistance;
+	}
+	public double getTotalCargo() {
+		return totalCargo;
+	}
+	public void setTotalCargo(double totalCargo) {
+		this.totalCargo = totalCargo;
+	}
+	public double getAcumCost() {
+		return acumCost;
+	}
+	public void setAcumCost(double acumCost) {
+		this.acumCost = acumCost;
 	}
 	public abstract void transport();
 	public abstract void appropriateRevenue();
