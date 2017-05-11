@@ -62,11 +62,10 @@ public class Main {
 
 	private static void loadInitialFleetFromCSV(String filePath){
 		List<String[]> data =CSVReader.forGeneral(filePath);
-		//int shipCount = 0;
+		int shipCount = 0;
 		ShipOperator operator = new SimpleShipOperator("NYK");
 		for (int i=0;i<data.size();i++){
-			if (data.get(i)[0].equals( "shipName")){
-				// Input ship data from ship data file "ship_config_2.csv"
+			if (data.get(i)[0].equals("shipName")){
 				String name = data.get(i+1)[0];
 				double speed = Double.parseDouble(data.get(i+3)[0]);
 				CargoType cargoType = CargoType.valueOf(data.get(i+3)[1]);
@@ -79,16 +78,12 @@ public class Main {
 				// Make instance of SimpleShip class using above input data
 				Ship ship = new SimpleShip(speed, cargoType, cargoAmount, foc, fuelCapacity, fuelType, initialPort, cost);
 				ship.setName(name);
-				// Make instance of ShipOperator class using input data
-				//ShipOperator operator = new SimpleShipOperator(data.get(i+5)[0]);
 				ship.setOwner(operator);
-				//int numOfShips = Integer.parseInt(data.get(i+6)[0]);
 				Fleet.add(ship);
-				// Move plus 4 lines in Reading CSV files. (Read next ship data)
-				i = i + 4;
-				//shipCount ++;
+				shipCount ++;
 			}
 		}
+		System.out.println(shipCount);
 	}
 
 	private static void loadInitialPorts(String configFilePath){
@@ -99,22 +94,26 @@ public class Main {
 		for (int i=0;i<data.size();i++){
 			if (data.get(i)[0].equals( "PortName")){
 				String name = data.get(i+1)[0];
-				String fuelType = data.get(i+3)[0];
-				String loadingType = data.get(i+3)[1];
-				String bunkeringCapacity = data.get(i+3)[2];
-				String loadingCapacity = data.get(i+3)[3];
-				String berthingFee = data.get(i+3)[4];
-				int numOfPortFacilities = Integer.parseInt(data.get(i+4)[0]);
-				HashMap<String, String> param = new HashMap<String, String>();
-				param.put("FuelType", fuelType);
-				param.put("LoadingType", loadingType);
-				param.put("BunkeringCapacity", bunkeringCapacity);
-				param.put("LoadingCapacity", loadingCapacity);
-				param.put("BerthingFee", berthingFee);
 				Port port = new SimplePort(name);
-				port.addPortFacilities(param,numOfPortFacilities);
-				ports.add(port);
+				int kindsOfFacility = Integer.parseInt(data.get(i+1)[1]);
+				for(int j = 0; j < kindsOfFacility; j++){
+					String fuelType = data.get(i+3+3*j)[0];
+					String loadingType = data.get(i+3+3*j)[1];
+					String bunkeringCapacity = data.get(i+3+3*j)[2];
+					String loadingCapacity = data.get(i+3+3*j)[3];
+					String berthingFee = data.get(i+3+3*j)[4];
+					int numOfPortFacilities = Integer.parseInt(data.get(i+4+3*j)[0]);
+					HashMap<String, String> param = new HashMap<String, String>();
+					param.put("FuelType", fuelType);
+					param.put("LoadingType", loadingType);
+					param.put("BunkeringCapacity", bunkeringCapacity);
+					param.put("LoadingCapacity", loadingCapacity);
+					param.put("BerthingFee", berthingFee);
+					port.addPortFacilities(param,numOfPortFacilities);
+				}
 				portCount ++;
+				ports.add(port);
+				System.out.println(portCount);
 			}
 			if (data.get(i)[0].equals("RouteMatrix")){
 				routeMatrix = new double[portCount][portCount];
@@ -127,36 +126,6 @@ public class Main {
 		}
 		PortNetwork.setPortSettings(ports,routeMatrix);
 	}
-
-//	private static void loadMarketInfo(String filePath){
-//		CargoType cargoType = CargoType.HFO;
-//		double upforStandard = 1.037;
-//		double downforStandard = 0.964;
-//		double pforStandard = 0.688;
-//		double upforRate = 1.246;
-//		double downforRate = 0.89;
-//		double pforRate = 0.457;
-//		double initialStandard = 10.82;
-//		double initialRate = 1.84;
-//		Freight freight = new Freight(cargoType,upforStandard,downforStandard,pforStandard,upforRate,downforRate,pforRate,initialStandard,initialRate);
-//		//List<String[]> data = CSVReader.forGeneral(filePath);
-//		double initialPrice = 152;
-//		double upFactor = 1.124;
-//		double downFactor = 0.888;
-//		double probability = 0.539;
-//		FuelPrice oilprice = new BinomialPrice(initialPrice,upFactor,downFactor,probability);
-//
-//		int limit = 300;
-//		double amount = 600000;
-//		int duration = 800;
-//		String departure = "Japan";
-//		String destination = "Los Angels";
-//		Demand demand = new SimpleDemand(cargoType,limit,amount,duration,departure,destination);
-//
-//		Market.addDemand(demand);
-//		Market.addFuelPrice(oilprice);
-//		Market.addFreight(freight);
-//	}
 
 	private static void loadMarketInfoFromCSV(String freightFilePath, String fuelpriceFilePath, String demandFilePath){
 		List<String[]> data = CSVReader.forGeneral(freightFilePath);
@@ -205,20 +174,17 @@ public class Main {
 						DependedFuel fuel = new DependedFuel();
 						fuel.setCoeff(coeff);
 						fuel.setFuelType(fuelType);
+						fuel.setDependedFuel("HFO");
 						fuelprice = (FuelPrice) fuel;
 						break;
 					default:
 						;
 						
 				}
-				i = i + 4;
-				
-
-			
-				fuelprice.setFuelType(fuelType);
+				Market.addFuelPrice(fuelprice);
 			}
 		}
-		Market.addFuelPrice(fuelprice);
+		
 
 		data = CSVReader.forGeneral(demandFilePath);
 		Demand demand = null;

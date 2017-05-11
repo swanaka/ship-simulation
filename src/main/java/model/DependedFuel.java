@@ -1,14 +1,12 @@
 package model;
 
+import model.Status.FuelType;
+
 public class DependedFuel extends FuelPrice {
 	
-	private FuelPrice dependedFuel;
+	private String dependedFuel;
 	private double coeff;
 	
-	
-	public void setDependFuel(FuelPrice fuel){
-		this.dependedFuel = fuel;
-	}
 	
 	@Override
 	public void timeNext() {
@@ -18,14 +16,24 @@ public class DependedFuel extends FuelPrice {
 
 	@Override
 	public double getPastPrice(int past) {
-		return this.dependedFuel.getPastPrice(past) * coeff;
+		for (FuelPrice fuel : Market.getFuels()){
+			if(dependedFuel.equals(fuel.getFuelType().toString())){
+				return fuel.getPastPrice(past) * this.coeff;
+			}
+		}
+		return 0;
 	}
 	@Override
 	public double getPrice() {
-		return this.dependedFuel.price * coeff;
+		for (FuelPrice fuel : Market.getFuels()){
+			if(dependedFuel.equals(fuel.getFuelType().toString())){
+				return fuel.getPrice()* coeff;
+			}
+		}
+		return 0;
 	}
 	
-	public void setDependedFuel(FuelPrice fuel){
+	public void setDependedFuel(String fuel){
 		this.dependedFuel = fuel;
 	}
 	
