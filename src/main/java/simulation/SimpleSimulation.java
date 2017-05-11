@@ -35,6 +35,7 @@ public class SimpleSimulation extends Simulation{
 				outputList.add("Amount of Cargo");
 				outputList.add("Amount of Fuel");
 				outputList.add("Remaining Desitance");
+				outputList.add("Berthing Port");
 			}
 			
 			outputList.add("");
@@ -54,7 +55,11 @@ public class SimpleSimulation extends Simulation{
 				outputList.add(String.valueOf(ship.getAmountOfCargo()));
 				outputList.add(String.valueOf(ship.getAmountOfFuel()));
 				outputList.add(String.valueOf(ship.getRemainingDistance()));
-				
+				if(ship.getBerthingPort()!=null){
+					outputList.add(ship.getBerthingPort().getName());
+				}else{
+					outputList.add("");
+				}
 				outputList.add("");
 			}
 			//this.portNetwork.save(now);
