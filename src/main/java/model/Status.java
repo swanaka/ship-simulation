@@ -27,8 +27,7 @@ public class Status {
 		NO,
 	}
 	
-	public enum FuelType{
-		OIL("Oil"), 
+	public enum FuelType{ 
 		LNG("LNG"), 
 		METHANOL("METHANOL"),
 		HFO("HFO"),
@@ -40,5 +39,5 @@ public class Status {
 		}
 	}
 	
-	public enum CargoType{Container, HFO}
+	public enum CargoType{Container, OIL}
 }

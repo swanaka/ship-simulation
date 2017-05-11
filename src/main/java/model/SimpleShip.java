@@ -54,13 +54,13 @@ public class SimpleShip extends Ship {
 			this.totalDistance += actualDis;
 		}
 		this.setRemainingDistance(this.remainingDistance - actualDis);
-		if(this.amountOfFuel < foc){
+		if(this.amountOfFuel < foc * speed){
 			this.totalFuel += this.amountOfFuel;
 		}else{
-			this.totalFuel += foc;
+			this.totalFuel += foc * speed;
 		}
-		this.setAmountOfFuel(this.amountOfFuel - foc);
-		calcGasEmission(foc);
+		this.setAmountOfFuel(this.amountOfFuel - foc * speed);
+		calcGasEmission(foc * speed);
 		this.acumCost += this.getOperatingCost();
 
 	}

@@ -5,11 +5,12 @@ import java.util.HashMap;
 import java.util.List;
 
 import model.Demand;
+import model.DependedFuel;
 import model.Fleet;
 import model.Freight;
 import model.FuelPrice;
 import model.Market;
-import model.OilPrice;
+import model.BinomialPrice;
 import model.Port;
 import model.PortNetwork;
 import model.Ship;
@@ -42,22 +43,22 @@ public class Main {
 
 	}
 
-	private static void loadInitialFleet(String filePath){
-		//List<String[]> data =CSVReader.forGeneral(filePath);
-		double speed = 28;
-		CargoType cargoType = CargoType.HFO;
-		double cargoAmount = 300000;
-		double foc = 1.24;
-		double fuelCapacity = 5000;
-		FuelType fuelType = FuelType.OIL;
-		Port initialPort = PortNetwork.getPort("Japan");
-		double cost = 0;
-		
-		Ship ship = new SimpleShip(speed, cargoType, cargoAmount, foc, fuelCapacity, fuelType, initialPort, cost);
-		ShipOperator operator = new SimpleShipOperator("NYK");
-		ship.setOwner(operator);
-		Fleet.add(ship);
-	}
+//	private static void loadInitialFleet(String filePath){
+//		//List<String[]> data =CSVReader.forGeneral(filePath);
+//		double speed = 28;
+//		CargoType cargoType = CargoType.HFO;
+//		double cargoAmount = 300000;
+//		double foc = 1.24;
+//		double fuelCapacity = 5000;
+//		FuelType fuelType = FuelType.OIL;
+//		Port initialPort = PortNetwork.getPort("Japan");
+//		double cost = 0;
+//		
+//		Ship ship = new SimpleShip(speed, cargoType, cargoAmount, foc, fuelCapacity, fuelType, initialPort, cost);
+//		ShipOperator operator = new SimpleShipOperator("NYK");
+//		ship.setOwner(operator);
+//		Fleet.add(ship);
+//	}
 
 	private static void loadInitialFleetFromCSV(String filePath){
 		List<String[]> data =CSVReader.forGeneral(filePath);
@@ -128,35 +129,35 @@ public class Main {
 		PortNetwork.setPortSettings(ports,routeMatrix);
 	}
 
-	private static void loadMarketInfo(String filePath){
-		CargoType cargoType = CargoType.HFO;
-		double upforStandard = 1.037;
-		double downforStandard = 0.964;
-		double pforStandard = 0.688;
-		double upforRate = 1.246;
-		double downforRate = 0.89;
-		double pforRate = 0.457;
-		double initialStandard = 10.82;
-		double initialRate = 1.84;
-		Freight freight = new Freight(cargoType,upforStandard,downforStandard,pforStandard,upforRate,downforRate,pforRate,initialStandard,initialRate);
-		//List<String[]> data = CSVReader.forGeneral(filePath);
-		double initialPrice = 152;
-		double upFactor = 1.124;
-		double downFactor = 0.888;
-		double probability = 0.539;
-		FuelPrice oilprice = new OilPrice(initialPrice,upFactor,downFactor,probability);
-
-		int limit = 300;
-		double amount = 600000;
-		int duration = 800;
-		String departure = "Japan";
-		String destination = "Los Angels";
-		Demand demand = new SimpleDemand(cargoType,limit,amount,duration,departure,destination);
-
-		Market.addDemand(demand);
-		Market.addFuelPrice(oilprice);
-		Market.addFreight(freight);
-	}
+//	private static void loadMarketInfo(String filePath){
+//		CargoType cargoType = CargoType.HFO;
+//		double upforStandard = 1.037;
+//		double downforStandard = 0.964;
+//		double pforStandard = 0.688;
+//		double upforRate = 1.246;
+//		double downforRate = 0.89;
+//		double pforRate = 0.457;
+//		double initialStandard = 10.82;
+//		double initialRate = 1.84;
+//		Freight freight = new Freight(cargoType,upforStandard,downforStandard,pforStandard,upforRate,downforRate,pforRate,initialStandard,initialRate);
+//		//List<String[]> data = CSVReader.forGeneral(filePath);
+//		double initialPrice = 152;
+//		double upFactor = 1.124;
+//		double downFactor = 0.888;
+//		double probability = 0.539;
+//		FuelPrice oilprice = new BinomialPrice(initialPrice,upFactor,downFactor,probability);
+//
+//		int limit = 300;
+//		double amount = 600000;
+//		int duration = 800;
+//		String departure = "Japan";
+//		String destination = "Los Angels";
+//		Demand demand = new SimpleDemand(cargoType,limit,amount,duration,departure,destination);
+//
+//		Market.addDemand(demand);
+//		Market.addFuelPrice(oilprice);
+//		Market.addFreight(freight);
+//	}
 
 	private static void loadMarketInfoFromCSV(String freightFilePath, String oilpriceFilePath, String demandFilePath){
 		List<String[]> data = CSVReader.forGeneral(freightFilePath);
@@ -182,22 +183,38 @@ public class Main {
 		Market.addFreight(freight);
 
 		data = null;
+		double coeff = 1.75;
 		data = CSVReader.forGeneral(oilpriceFilePath);
-		FuelPrice oilprice = null;
+		FuelPrice fuelprice = null;
 		for (int i=0;i<data.size();i++){
-			if (data.get(i)[0].equals( "oilpriceName")){
+			if (data.get(i)[0].equals( "FuelpriceName")){
 				// Input oilprice data from oilprice data file "oilprice_config.csv"
 				String name = data.get(i+1)[0];
+				FuelType fuelType = FuelType.valueOf(name);
+				switch(fuelType){
+					case HFO:
+					case LNG:
+						double initialPrice = Double.parseDouble(data.get(i+3)[0]);
+						double upFactor = Double.parseDouble(data.get(i+3)[1]);
+						double downFactor = Double.parseDouble(data.get(i+3)[2]);
+						double probability = Double.parseDouble(data.get(i+3)[3]);
+						fuelprice = new BinomialPrice(initialPrice,upFactor,downFactor,probability);
+						fuelprice.setFuelType(fuelType);
+						break;
+					case LSFO:
+						DependedFuel fuel = new DependedFuel();
+						fuel.setCoeff(coeff);
+						fuel.setFuelType(fuelType);
+						fuelprice = (FuelPrice) fuel;
+						
+				}
+				
 
-				double initialPrice = Double.parseDouble(data.get(i+3)[0]);
-				double upFactor = Double.parseDouble(data.get(i+3)[1]);
-				double downFactor = Double.parseDouble(data.get(i+3)[2]);
-				double probability = Double.parseDouble(data.get(i+3)[3]);
-
-				oilprice = new OilPrice(initialPrice,upFactor,downFactor,probability);
+			
+				fuelprice.setFuelType(fuelType);
 			}
 		}
-		Market.addFuelPrice(oilprice);
+		Market.addFuelPrice(fuelprice);
 
 		data = CSVReader.forGeneral(demandFilePath);
 		Demand demand = null;
