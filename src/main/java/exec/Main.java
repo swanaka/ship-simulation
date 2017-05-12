@@ -30,13 +30,14 @@ public class Main {
 	public static void main(String[] args){
 
 		int endTime = Integer.parseInt(args[0]);
+		String outputDir = args[1];
 		loadInitialPorts("./data/port_config.csv");
 		//loadMarketInfo("./../data/market_config.csv");
 		loadMarketInfoFromCSV("./data/freight_config.csv","./data/fuelprice_config.csv","./data/demand_config.csv");
 		//loadInitialFleet("../../data/ship_config.csv");
 		loadInitialFleetFromCSV("./data/fleet_config.csv");
 
-		Simulation simulation = new SimpleSimulation(endTime);
+		Simulation simulation = new SimpleSimulation(endTime,outputDir);
 		System.out.println("Simulation Start");
 		simulation.execute();
 		System.out.println("Simulation End");

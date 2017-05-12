@@ -13,13 +13,14 @@ import util.CSVwriter;
 
 public class SimpleSimulation extends Simulation{
 
-	private final String OUTPUT_DIR = "./data/";
+	private String OUTPUT_DIR = "./data/";
 	private final String OUTPUT_CSV_FILE = "result.csv";
 	
 	private final String OUTPUT_ALL_RESULT = "result_all.csv";
 
-	public SimpleSimulation(int endTime) {
+	public SimpleSimulation(int endTime, String outputDir) {
 		super(endTime);
+		if(outputDir != null) this.OUTPUT_DIR = outputDir;
 	}
 
 	@Override
