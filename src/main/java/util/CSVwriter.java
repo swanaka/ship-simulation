@@ -5,6 +5,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class CSVwriter {
@@ -25,7 +27,7 @@ public class CSVwriter {
 			}
 			String sample = null;
 			for (String elem: output){
-				sample = elem + ", ";
+				sample = elem + ",";
 				pw.print(sample);
 			}
 			pw.println();
@@ -38,4 +40,17 @@ public class CSVwriter {
 			}
 		}
 	}
+	public static void writeAll(String filename, List<String[]> output, boolean overwrite){
+		boolean flag = overwrite;
+		for (String[] elem : output){
+			List<String> list = Arrays.asList(elem);
+			if(flag == true){
+				write(filename,list,flag);
+			}else{
+				write(filename,list,flag);
+				flag = true;
+			}
+		}
+	}
+		
 }

@@ -178,6 +178,7 @@ public class SimpleSimulation extends Simulation{
 		outputList.add("Total CO2 Emission");
 		outputList.add("Total NOx Emission");
 		outputList.add("Total SOx Emission");
+		outputList.add("Total Waiting Time");
 		CSVwriter.write(OUTPUT_DIR + OUTPUT_ALL_RESULT, outputList, true);
  		outputList = new ArrayList<String>();
 		

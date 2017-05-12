@@ -13,6 +13,10 @@ public class PortNetwork {
 		portList = new ArrayList<Port>();
 		routeMatrix = new double[0][0];
 	}
+	public static void reset(){
+		portList = new ArrayList<Port>();
+		routeMatrix = new double[0][0];
+	}
 	public static PortNetwork getInstance(){
 		return portnetwork;
 	}

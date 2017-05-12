@@ -70,11 +70,13 @@ public class SimpleShip extends Ship {
 		//TO-DO
 		if(this.schedule.size() == 0) return;
 		else {
+			
 			Schedule currentSchedule = this.schedule.get(0);
-			if (currentSchedule.getDestination().equals(this.berthingPort)){
+			if (currentSchedule.getDestination().equals(this.berthingPort) && currentSchedule.fee != 0){
 				double revenue = currentSchedule.getIncome();
 				super.owner.addCashFlow(revenue);
 				this.addCashFlow(revenue);
+				System.out.println("Revenue " + revenue);
 			}
 		}
 

@@ -26,5 +26,8 @@ public class Fleet {
 	public static List<Ship> getShips(){
 		return ships;
 	}
+	public static void reset(){
+		ships = new ArrayList<Ship>();
+	}
 
 }

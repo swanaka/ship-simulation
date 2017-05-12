@@ -30,11 +30,9 @@ public class Main {
 	public static void main(String[] args){
 
 		int endTime = Integer.parseInt(args[0]);
-		String outputDir = args[1];
+		String outputDir = null;
 		loadInitialPorts("./data/port_config.csv");
-		//loadMarketInfo("./../data/market_config.csv");
 		loadMarketInfoFromCSV("./data/freight_config.csv","./data/fuelprice_config.csv","./data/demand_config.csv");
-		//loadInitialFleet("../../data/ship_config.csv");
 		loadInitialFleetFromCSV("./data/fleet_config.csv");
 
 		Simulation simulation = new SimpleSimulation(endTime,outputDir);
@@ -44,24 +42,7 @@ public class Main {
 
 	}
 
-//	private static void loadInitialFleet(String filePath){
-//		//List<String[]> data =CSVReader.forGeneral(filePath);
-//		double speed = 28;
-//		CargoType cargoType = CargoType.HFO;
-//		double cargoAmount = 300000;
-//		double foc = 1.24;
-//		double fuelCapacity = 5000;
-//		FuelType fuelType = FuelType.OIL;
-//		Port initialPort = PortNetwork.getPort("Japan");
-//		double cost = 0;
-//		
-//		Ship ship = new SimpleShip(speed, cargoType, cargoAmount, foc, fuelCapacity, fuelType, initialPort, cost);
-//		ShipOperator operator = new SimpleShipOperator("NYK");
-//		ship.setOwner(operator);
-//		Fleet.add(ship);
-//	}
-
-	private static void loadInitialFleetFromCSV(String filePath){
+	public static void loadInitialFleetFromCSV(String filePath){
 		List<String[]> data =CSVReader.forGeneral(filePath);
 		int shipCount = 0;
 		ShipOperator operator = new SimpleShipOperator("NYK");
@@ -87,7 +68,7 @@ public class Main {
 		System.out.println(shipCount);
 	}
 
-	private static void loadInitialPorts(String configFilePath){
+	public static void loadInitialPorts(String configFilePath){
 		List<String[]> data = CSVReader.forGeneral(configFilePath);
 		List<Port> ports = new ArrayList<Port>();
 		double[][] routeMatrix = null;
@@ -128,7 +109,7 @@ public class Main {
 		PortNetwork.setPortSettings(ports,routeMatrix);
 	}
 
-	private static void loadMarketInfoFromCSV(String freightFilePath, String fuelpriceFilePath, String demandFilePath){
+	public static void loadMarketInfoFromCSV(String freightFilePath, String fuelpriceFilePath, String demandFilePath){
 		List<String[]> data = CSVReader.forGeneral(freightFilePath);
 		Freight freight = null;
 		for (int i=0;i<data.size();i++){

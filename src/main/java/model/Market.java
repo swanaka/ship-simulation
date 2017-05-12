@@ -17,6 +17,11 @@ public class Market {
 		demands = new ArrayList<Demand>();
 		freights  = new ArrayList<Freight>();
 	}
+	public static void reset(){
+		fuels = new ArrayList<FuelPrice>();
+		demands = new ArrayList<Demand>();
+		freights  = new ArrayList<Freight>();
+	}
 	public static Market getInstance(){
 		return market;
 	}
