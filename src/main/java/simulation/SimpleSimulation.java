@@ -134,8 +134,9 @@ public class SimpleSimulation extends Simulation{
 			outputList.add(String.valueOf(ship.getFuelType()));
 			double totalFuel = ship.getTotalFuel();
 			outputList.add(String.valueOf(totalFuel));
+			double shipCost = ship.getTotalCost();
 			double shipRevenue = ship.getCashFlow();
-			outputList.add(String.valueOf(shipRevenue));
+			outputList.add(String.valueOf(shipCost));
 			double co2 = ship.getCo2();
 			outputList.add(String.valueOf(co2));
 			double sox = ship.getSox();

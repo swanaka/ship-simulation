@@ -62,6 +62,7 @@ public class SimpleShip extends Ship {
 		this.setAmountOfFuel(this.amountOfFuel - foc * speed);
 		calcGasEmission(foc * speed);
 		this.acumCost += this.getOperatingCost();
+		this.totalCost += this.getOperatingCost();
 
 	}
 

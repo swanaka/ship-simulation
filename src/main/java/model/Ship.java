@@ -39,6 +39,7 @@ public abstract class Ship {
 	protected double totalDistance;
 	protected double totalCargo;
 	protected double acumCost;
+	protected double totalCost;
 	
 	public Ship(){
 		amountOfFuel = 0;
@@ -219,7 +220,9 @@ public abstract class Ship {
 		this.amountOfCargo = amountOfCargo;
 		}
 	}
-
+	public double getTotalCost(){
+		return this.totalCost;
+	}
 	public void setShipStatus(ShipStatus status){
 		this.status = status;
 	}
