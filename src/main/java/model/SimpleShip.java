@@ -15,9 +15,7 @@ import model.Status.FuelType;
  */
 public class SimpleShip extends Ship {
 
-
-
-	public SimpleShip(double speed, CargoType cargoType, double cargoAmount, double foc, double fuelCapacity, FuelType fuelType, Port initialPort){
+	public SimpleShip(double speed, CargoType cargoType, double cargoAmount, double foc, double fuelCapacity, FuelType fuelType, Port initialPort, double operatingCost){
 		super();
 		this.schedule = new ArrayList<Schedule>();
 		this.speed = speed;
@@ -31,6 +29,7 @@ public class SimpleShip extends Ship {
 		this.engine = new SimpleEngine(foc);
 		Schedule initialSchedule = new SimpleSchedule(0,0,initialPort,initialPort);
 		this.schedule.add(initialSchedule);
+		this.setOperatingCost(operatingCost);
 	}
 
 	@Override
@@ -45,13 +44,25 @@ public class SimpleShip extends Ship {
 		double speed = this.speed;
 
 		// 3. Calculate FOC
-		double foc = super.engine.calcFOC(speed);
+		double foc = this.engine.calcFOC(speed);
 
 		// 4. Update remainng distance, fuel, gas emission
 		double actualDis = speed;
+		if(this.remainingDistance < actualDis){
+			this.totalDistance += this.remainingDistance;
+		}else{
+			this.totalDistance += actualDis;
+		}
 		this.setRemainingDistance(this.remainingDistance - actualDis);
-		this.setAmountOfFuel(this.amountOfFuel - foc);
-		super.emissionedGas += calcGasEmission(foc);
+		if(this.amountOfFuel < foc * speed){
+			this.totalFuel += this.amountOfFuel;
+		}else{
+			this.totalFuel += foc * speed;
+		}
+		this.setAmountOfFuel(this.amountOfFuel - foc * speed);
+		calcGasEmission(foc * speed);
+		this.acumCost += this.getOperatingCost();
+		this.totalCost += this.getOperatingCost();
 
 	}
 
@@ -60,10 +71,13 @@ public class SimpleShip extends Ship {
 		//TO-DO
 		if(this.schedule.size() == 0) return;
 		else {
+			
 			Schedule currentSchedule = this.schedule.get(0);
-			if (currentSchedule.getDestination().equals(this.berthingPort)){
+			if (currentSchedule.getDestination().equals(this.berthingPort) && currentSchedule.fee != 0){
 				double revenue = currentSchedule.getIncome();
 				super.owner.addCashFlow(revenue);
+				this.addCashFlow(revenue);
+				System.out.println("Revenue " + revenue);
 			}
 		}
 
@@ -78,8 +92,27 @@ public class SimpleShip extends Ship {
 //		return distance / (plannedTime - now);
 //	}
 
-	private double calcGasEmission(double foc){
-		return foc;
+	private void calcGasEmission(double foc){
+		double noxcoeff = 0;
+		double soxcoeff = 0;
+		double co2coeff = 0;
+		if(this.getFuelType() == FuelType.LNG){
+			noxcoeff = 9;
+			soxcoeff = 0;
+			co2coeff = 2.7;
+			
+		}else if (this.getFuelType() == FuelType.HFO){
+			noxcoeff = 9;
+			soxcoeff = 2;
+			co2coeff = 3;
+		}else if (this.getFuelType() == FuelType.LSFO){
+			noxcoeff = 9;
+			soxcoeff = 2;
+			co2coeff = 3;
+		}
+		this.nox += foc * noxcoeff;
+		this.sox += foc * soxcoeff;
+		this.co2 += foc * co2coeff;
 	}
 
 	private class SimpleEngine extends Engine{
@@ -113,10 +146,11 @@ public class SimpleShip extends Ship {
 		@Override
 		public double getIncome() {
 			double income = fee * getUnloadingAmount();
-			double minus = 0;
+			double minus = acumCost;
 			if (time > super.getEndTime()){
 				 minus = penalty * (super.getEndTime() - time);
 			}
+			acumCost = 0;
 			return income - minus;
 		}
 

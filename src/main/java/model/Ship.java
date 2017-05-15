@@ -18,6 +18,7 @@ public abstract class Ship {
 	protected ShipOperator owner;
 	protected CargoHold cargoHold;
 	protected String name;
+	private double operatingCost;
 
 	//Status of ship
 	protected Location loc;
@@ -27,19 +28,28 @@ public abstract class Ship {
 	protected double amountOfCargo;
 	protected double remainingDistance;
 	protected double cashFlow;
-	protected double emissionedGas;
+	protected double nox;
+	protected double sox;
+	protected double co2;
 	protected ShipStatus status;
 	protected int waitingTime;
 	protected double speed;
 	protected int time;
-
+	protected double totalFuel;
+	protected double totalDistance;
+	protected double totalCargo;
+	protected double acumCost;
+	protected double totalCost;
+	
 	public Ship(){
 		amountOfFuel = 0;
 		ratioOfAccident = 0;
 		amountOfCargo = 0;
 		remainingDistance = 0;
 		cashFlow = 0;
-		emissionedGas = 0;
+		nox = 0;
+		sox = 0;
+		co2 = 0;
 		status = ShipStatus.WAIT;
 		waitingTime = 0;
 		time = 0;
@@ -80,7 +90,8 @@ public abstract class Ship {
 				}
 				break;
 			case BERTH:
-				if(this.schedule.get(0).judgeEnd() && time >= this.schedule.get(1).startTime ){
+				if(this.schedule.size() <= 1);
+				else if(this.schedule.get(0).judgeEnd() && time >= this.schedule.get(1).startTime ){
 					if(this.schedule.size() > 1){
 						this.removeSchedule();
 						this.berthingPort.departure(this);
@@ -93,6 +104,54 @@ public abstract class Ship {
 				break;
 		}
 
+	}
+	public double getNox() {
+		return nox;
+	}
+	public void setNox(double nox) {
+		this.nox = nox;
+	}
+	public double getSox() {
+		return sox;
+	}
+	public void setSox(double sox) {
+		this.sox = sox;
+	}
+	public double getCo2() {
+		return co2;
+	}
+	public void setCo2(double co2) {
+		this.co2 = co2;
+	}
+	public int getWaitingTime() {
+		return waitingTime;
+	}
+	public void setWaitingTime(int waitingTime) {
+		this.waitingTime = waitingTime;
+	}
+	public double getTotalFuel() {
+		return totalFuel;
+	}
+	public void setTotalFuel(double totalFuel) {
+		this.totalFuel = totalFuel;
+	}
+	public double getTotalDistance() {
+		return totalDistance;
+	}
+	public void setTotalDistance(double totalDistance) {
+		this.totalDistance = totalDistance;
+	}
+	public double getTotalCargo() {
+		return totalCargo;
+	}
+	public void setTotalCargo(double totalCargo) {
+		this.totalCargo = totalCargo;
+	}
+	public double getAcumCost() {
+		return acumCost;
+	}
+	public void setAcumCost(double acumCost) {
+		this.acumCost = acumCost;
 	}
 	public abstract void transport();
 	public abstract void appropriateRevenue();
@@ -134,7 +193,12 @@ public abstract class Ship {
 			System.out.println("Short of Fuel!");
 		}
 	}
-
+	public void addCashFlow(double cashFlow){
+		this.cashFlow += cashFlow;
+	}
+	public double getCashFlow(){
+		return this.cashFlow;
+	}
 	public double getRatioOfAccident() {
 		return ratioOfAccident;
 	}
@@ -156,7 +220,9 @@ public abstract class Ship {
 		this.amountOfCargo = amountOfCargo;
 		}
 	}
-
+	public double getTotalCost(){
+		return this.totalCost;
+	}
 	public void setShipStatus(ShipStatus status){
 		this.status = status;
 	}
@@ -200,6 +266,13 @@ public abstract class Ship {
 
 	public void setPropeller(Propeller propeller) {
 		this.propeller = propeller;
+	}
+	
+	public void setOperatingCost(double cost){
+		this.operatingCost = cost;
+	}
+	public double getOperatingCost(){
+		return this.operatingCost;
 	}
 
 

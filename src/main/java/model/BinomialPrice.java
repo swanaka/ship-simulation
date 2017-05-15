@@ -6,7 +6,7 @@ package model;
  * @author Shinnosuke Wanaka
  * 
  */
-public class OilPrice extends FuelPrice{
+public class BinomialPrice extends FuelPrice{
 	private double upFactor;
 	private double downFactor;
 	private double upProbability;
@@ -32,7 +32,7 @@ public class OilPrice extends FuelPrice{
 	}
 
 
-	public OilPrice(double initialPrice, double upFactor, double downFactor, double upProbability){
+	public BinomialPrice(double initialPrice, double upFactor, double downFactor, double upProbability){
 		super();
 		this.prePrice = initialPrice;
 		this.price = initialPrice;

@@ -8,6 +8,7 @@ public abstract class ShipOperator {
 
 	//Status
 	private double cashFlow;
+
 	
 	//Function
 	public void addCashFlow(double add){
@@ -45,6 +46,6 @@ public abstract class ShipOperator {
 	public void setCashFlow(double cashFlow) {
 		this.cashFlow = cashFlow;
 	}
-
-
+	
+	
 }

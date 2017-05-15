@@ -32,8 +32,10 @@ public class Freight{
 		this.freightRate = initialRate;
 	}
 	public void timeNext(){
+		this.counter++;
 		this.time++;
 		if (counter > 24){
+			counter = 0;
 			double n = Math.random();
 			if (n >= pforStandard){
 				this.standardFreight = this.standardFreight * upforStandard;

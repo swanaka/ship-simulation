@@ -27,10 +27,11 @@ public class Status {
 		NO,
 	}
 	
-	public enum FuelType{
-		OIL("Oil"), 
+	public enum FuelType{ 
 		LNG("LNG"), 
-		METHANOL("METHANOL");
+		METHANOL("METHANOL"),
+		HFO("HFO"),
+		LSFO("LSFO");
 		
 		private final String name;
 		private FuelType(final String name){
@@ -38,5 +39,5 @@ public class Status {
 		}
 	}
 	
-	public enum CargoType{Container, HFO}
+	public enum CargoType{Container, OIL}
 }

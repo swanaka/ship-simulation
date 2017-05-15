@@ -9,10 +9,11 @@ public abstract class Simulation {
 	private int startTime;
 	private int endTime;
 	//Status
-	protected int now;
+	protected int now = 0;
 	
 	//Function
 	public abstract void save(int now);
+	public abstract void save();
 	
 	public Simulation(int endTime){
 		
@@ -20,11 +21,13 @@ public abstract class Simulation {
 	}
 	
 	public void execute(){
+		save(-1);
 		while(now <= endTime){
 			timeNext();
 			save(now);
 			now++;
 		}
+		save();
 	};
 	
 	public void timeNext() {

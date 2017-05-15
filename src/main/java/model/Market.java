@@ -17,6 +17,11 @@ public class Market {
 		demands = new ArrayList<Demand>();
 		freights  = new ArrayList<Freight>();
 	}
+	public static void reset(){
+		fuels = new ArrayList<FuelPrice>();
+		demands = new ArrayList<Demand>();
+		freights  = new ArrayList<Freight>();
+	}
 	public static Market getInstance(){
 		return market;
 	}
@@ -153,7 +158,13 @@ public class Market {
 		//そこから出発地点まで来て、目的地まで一定船速で行くまでの燃料を計算
 		double fuelamount = ship.estimateFuelAmount(previousDestination,departure) + ship.estimateFuelAmount(departure,destination);
 		//今の燃料費にもとづいて総燃料費を計算
-		double sumFuelPrice = fuels.get(0).price * fuelamount;
+		double fuelPrice = 0;
+		for(FuelPrice fuel : fuels){
+			if (fuel.getFuelType() == ship.getFuelType()){
+				fuelPrice = fuel.getPrice();
+			}
+		}
+		double sumFuelPrice = fuelPrice * fuelamount;
 		//総燃料費を貨物量で割る(amountと最大貨物量の比較を忘れない)
 		if (amount >= ship.getAmountOfCargo()){
 			return sumFuelPrice / ship.getMaximumCargoAmount();

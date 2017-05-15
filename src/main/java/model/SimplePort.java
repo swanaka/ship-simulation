@@ -76,8 +76,8 @@ public class SimplePort extends Port {
 			if(berthingShip.getSchedule().isLoading)loading();
 			if(berthingShip.getSchedule().isUnLoading) unloading();
 			if(berthingShip.getSchedule().isBunkering) bunkering();
-			berthingShip.owner.addCashFlow(-1*this.berthingFee);
-			getOperator().addCashFlow(this.berthingFee);
+			//berthingShip.owner.addCashFlow(-1*this.berthingFee);
+			getOperator().addBerthingCash(this.berthingFee);
 		}
 
 		public void loading(){
@@ -87,6 +87,11 @@ public class SimplePort extends Port {
 		}
 
 		public void unloading(){
+			if(this.berthingShip.getAmountOfCargo() < loadingCapacity){
+				this.berthingShip.totalCargo += this.berthingShip.getAmountOfCargo();
+			}else{
+				this.berthingShip.totalCargo += loadingCapacity;
+			}
 			this.berthingShip.setAmountOfCargo(this.berthingShip.getAmountOfCargo() - loadingCapacity);
 			this.berthingShip.getSchedule().setUnloadingAmount(berthingShip.getSchedule().getUnloadingAmount()-loadingCapacity);
 			if (this.berthingShip.getSchedule().getUnloadingAmount() <= 0) this.berthingShip.getSchedule().setUnLoading(false);
@@ -102,6 +107,19 @@ public class SimplePort extends Port {
 		@Override
 		public void bunkering() {
 			this.berthingShip.setAmountOfFuel(this.berthingShip.getAmountOfFuel() + bunkeringCapacity);
+			double bunkeringAmount = 0;
+			if ( this.berthingShip.getMaximumCargoAmount() < (this.berthingShip.getAmountOfCargo() + bunkeringCapacity)){
+				bunkeringAmount = this.berthingShip.getMaximumCargoAmount() - this.berthingShip.getAmountOfCargo();
+			}else{
+				bunkeringAmount = bunkeringCapacity;
+			}
+			double fuelPrice = 0;
+			for (FuelPrice fuel : Market.fuels){
+				if (this.berthingShip.getFuelType() == fuel.getFuelType()){
+					fuelPrice = fuel.getPrice();
+				}
+			}
+			getOperator().addBunkeringCash(fuelPrice * bunkeringAmount);
 			if (berthingShip.getAmountOfFuel() == berthingShip.getFuelTank().getCapacity()){
 				this.berthingShip.getSchedule().setBunkering(false);
 			}

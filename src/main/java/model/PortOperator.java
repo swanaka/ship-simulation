@@ -7,12 +7,11 @@ public abstract class PortOperator {
 
 	//Status
 	private double cashFlow;
+	private double bunkeringCash;
+	
+	private double berthingCash;
 	
 	//Function
-	public void addCashFlow(double add){
-		this.cashFlow += add;
-	}
-
 	public String getName() {
 		return name;
 	}
@@ -36,4 +35,27 @@ public abstract class PortOperator {
 	public void setCashFlow(double cashFlow) {
 		this.cashFlow = cashFlow;
 	}
+	public void addBunkeringCash(double cash){
+		this.bunkeringCash += cash;
+	}
+	public double getBunkeringCash() {
+		return bunkeringCash;
+	}
+
+	public void setBunkeringCash(double bunkeringCash) {
+		this.bunkeringCash = bunkeringCash;
+	}
+	
+	public void addBerthingCash(double berthingCash){
+		this.berthingCash += berthingCash;
+	}
+
+	public double getBerthingCash() {
+		return berthingCash;
+	}
+
+	public void setBerthingCash(double berthingCost) {
+		this.berthingCash = berthingCost;
+	}
 }
+

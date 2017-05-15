@@ -13,6 +13,10 @@ public class PortNetwork {
 		portList = new ArrayList<Port>();
 		routeMatrix = new double[0][0];
 	}
+	public static void reset(){
+		portList = new ArrayList<Port>();
+		routeMatrix = new double[0][0];
+	}
 	public static PortNetwork getInstance(){
 		return portnetwork;
 	}
@@ -44,7 +48,7 @@ public class PortNetwork {
 	public void remove(Port port){
 		//TO-DO
 	}
-	public List<Port> getPorts() {
+	public static List<Port> getPorts() {
 		return portList;
 	}
 	public static void setPortSettings(List<Port> pList,double[][] route){
