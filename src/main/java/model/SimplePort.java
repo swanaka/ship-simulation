@@ -108,7 +108,7 @@ public class SimplePort extends Port {
 		public void bunkering() {
 			this.berthingShip.setAmountOfFuel(this.berthingShip.getAmountOfFuel() + bunkeringCapacity);
 			double bunkeringAmount = 0;
-			if ( this.berthingShip.getMaximumCargoAmount() > this.berthingShip.getAmountOfCargo() + bunkeringCapacity){
+			if ( this.berthingShip.getMaximumCargoAmount() < (this.berthingShip.getAmountOfCargo() + bunkeringCapacity)){
 				bunkeringAmount = this.berthingShip.getMaximumCargoAmount() - this.berthingShip.getAmountOfCargo();
 			}else{
 				bunkeringAmount = bunkeringCapacity;

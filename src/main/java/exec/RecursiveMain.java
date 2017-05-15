@@ -21,11 +21,23 @@ public class RecursiveMain {
 	private static final String fuelpriceFile = INPUT_DIR + "fuelprice_config.csv";
 	private static final String portFile = INPUT_DIR + "port_config.csv";
 	private static final String DIR_PREFIX = "case";
+	private final static String OUTPUT_OVERALL_RESULT = "result_overall.csv";
+	private static String OUTPUT_DIR_ROOT = "./data/";
 	
 	public static void main(String[] args){
 		System.out.println(args[0]);
 		int endTime = Integer.parseInt(args[0]);
 		String input = "case_table.csv";
+		List<String> outputListAll = new ArrayList<String>();
+		outputListAll.add("System's ilities");
+		outputListAll.add("Total Transported Ton Km");
+		outputListAll.add("Total Energy Consumption Unit");
+		outputListAll.add("Total Sales");
+		outputListAll.add("Total CO2 Emission");
+		outputListAll.add("Total NOx Emission");
+		outputListAll.add("Total SOx Emission");
+		outputListAll.add("Total Waiting Time");
+		CSVwriter.write(OUTPUT_DIR_ROOT + OUTPUT_OVERALL_RESULT, outputListAll, false);
 		List<String[]> data = CSVReader.forGeneral(INPUT_DIR + input);
 		for(String[] elem : data){
 			String caseNum = elem[0];

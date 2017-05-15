@@ -14,13 +14,16 @@ import util.CSVwriter;
 public class SimpleSimulation extends Simulation{
 
 	private String OUTPUT_DIR = "./data/";
+	private String OUTPUT_DIR_ROOT = "./data/";
 	private final String OUTPUT_CSV_FILE = "result.csv";
 	
 	private final String OUTPUT_ALL_RESULT = "result_all.csv";
+	private final String OUTPUT_OVERALL_RESULT = "result_overall.csv";
 
 	public SimpleSimulation(int endTime, String outputDir) {
 		super(endTime);
 		if(outputDir != null) this.OUTPUT_DIR = outputDir;
+		
 	}
 
 	@Override
@@ -94,6 +97,7 @@ public class SimpleSimulation extends Simulation{
 	@Override
 	public void save() {
 		List<String> outputList = new ArrayList<String>();
+		List<String> outputListAll = new ArrayList<String>();
 		List<Ship> ships = Fleet.getShips();
 		List<Port> ports = PortNetwork.getPorts();
 		double TTTM = 0;
@@ -104,7 +108,9 @@ public class SimpleSimulation extends Simulation{
 		double totalSox = 0;
 		double totalWaitingTime = 0;
 		outputList.add("Overall Result");
+		
 		CSVwriter.write(OUTPUT_DIR + OUTPUT_ALL_RESULT, outputList, false);
+		
 		outputList = new ArrayList<String>();
 		
 		for(Ship ship : ships){
@@ -172,7 +178,7 @@ public class SimpleSimulation extends Simulation{
 		}
 		
 		outputList.add("System's ilities");
-		outputList.add("Total Transported Ton Mile");
+		outputList.add("Total Transported Ton Km");
 		outputList.add("Total Energy Consumption Unit");
 		outputList.add("Total Sales");
 		outputList.add("Total CO2 Emission");
@@ -190,12 +196,13 @@ public class SimpleSimulation extends Simulation{
 		outputList.add(String.valueOf(totalNox));
 		outputList.add(String.valueOf(totalSox));
 		outputList.add((String.valueOf(totalWaitingTime)));
-		
+		outputListAll.addAll(outputList);
  		CSVwriter.write(OUTPUT_DIR + OUTPUT_ALL_RESULT, outputList, true);
-
+ 		CSVwriter.write(OUTPUT_DIR_ROOT + OUTPUT_OVERALL_RESULT, outputListAll, true);
 		System.out.println("Overall Result Saved!");
 
 	}
+	
 	
 	
 
