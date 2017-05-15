@@ -32,7 +32,7 @@ public class RecursiveMain {
 		outputListAll.add("System's ilities");
 		outputListAll.add("Total Transported Ton Km");
 		outputListAll.add("Total Energy Consumption Unit");
-		outputListAll.add("Total Sales");
+		outputListAll.add("Total Fuel Cost");
 		outputListAll.add("Total CO2 Emission");
 		outputListAll.add("Total NOx Emission");
 		outputListAll.add("Total SOx Emission");

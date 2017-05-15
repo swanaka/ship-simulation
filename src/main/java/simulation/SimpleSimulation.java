@@ -158,6 +158,7 @@ public class SimpleSimulation extends Simulation{
 			CSVwriter.write(OUTPUT_DIR + OUTPUT_ALL_RESULT, outputList, true);
 	 		outputList = new ArrayList<String>();
 		}
+		double totalFuelCost = 0;
 		for(Port port : ports){
 			outputList.add("Port Name");
 			outputList.add("Total Berthing Revenu");
@@ -173,6 +174,7 @@ public class SimpleSimulation extends Simulation{
 			outputList.add(String.valueOf(bunkeringRevenue));
 			totalSales += berthingRevenue;
 			totalSales += bunkeringRevenue;
+			totalFuelCost += bunkeringRevenue;
 			outputList.add("");
 			CSVwriter.write(OUTPUT_DIR + OUTPUT_ALL_RESULT, outputList, true);
 	 		outputList = new ArrayList<String>();
@@ -181,7 +183,7 @@ public class SimpleSimulation extends Simulation{
 		outputList.add("System's ilities");
 		outputList.add("Total Transported Ton Km");
 		outputList.add("Total Energy Consumption Unit");
-		outputList.add("Total Sales");
+		outputList.add("Total Fuel Cost[$]");
 		outputList.add("Total CO2 Emission");
 		outputList.add("Total NOx Emission");
 		outputList.add("Total SOx Emission");
@@ -192,7 +194,7 @@ public class SimpleSimulation extends Simulation{
 		outputList.add("");
 		outputList.add(String.valueOf(TTTM));
 		outputList.add(String.valueOf(TECU));
-		outputList.add(String.valueOf(totalSales));
+		outputList.add(String.valueOf(totalFuelCost));
 		outputList.add(String.valueOf(totalCo2));
 		outputList.add(String.valueOf(totalNox));
 		outputList.add(String.valueOf(totalSox));
