@@ -56,7 +56,7 @@ public abstract class Ship {
 					PortFacility facility = port.checkBerthing(this);
 					if(facility == null) {
 						setShipStatus(ShipStatus.WAIT);
-						this.waitingTime ++;
+						if(this.time > 500) this.waitingTime ++;
 					}
 					if(facility != null){
 						facility.accept(this);
@@ -71,7 +71,7 @@ public abstract class Ship {
 				PortFacility facility = port.checkBerthing(this);
 				if(facility == null){
 					setShipStatus(ShipStatus.WAIT);
-					this.waitingTime ++;
+					if(this.time > 500) this.waitingTime ++;
 				}
 				if(!(facility == null)){
 					facility.accept(this);
