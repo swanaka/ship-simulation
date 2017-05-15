@@ -102,9 +102,9 @@ public class RecursiveMain {
 		String[] row1 = {"shipName"};
 		String[] row2 = {"Ship_1"};
 		String[] row3 = {"speed","cargoType","cargoAmount", "foc", "fuelCapacity","fuelType","initialType","OperatingCost"};
-		String[] row4HFO = {"28","OIL","300000","1.24","5000","HFO","China","16000"};
-		String[] row4LSFO = {"28","OIL","300000","1.24","5000","LSFO","China","16000"};
-		String[] row4LNG = {"28","OIL","300000","1.24","5000","LNG","China","16000"};
+		String[] row4HFO = {"28","OIL","300000","0.36","5000","HFO","Japan","15000"};
+		String[] row4LSFO = {"28","OIL","300000","0.32","5000","LSFO","Japan","15000"};
+		String[] row4LNG = {"28","OIL","300000","0.29","5000","LNG","Japan","15000"};
 		templateHFO.add(row1);
 		templateHFO.add(row2);
 		templateHFO.add(row3);
@@ -148,22 +148,22 @@ public class RecursiveMain {
 		
 		switch(trend){
 		case "High":
-			data.get(3)[0] = String.valueOf(144);
-			data.get(3)[1] = String.valueOf(1.124);
-			data.get(3)[2] = String.valueOf(0.888);
-			data.get(3)[3] = String.valueOf(0.539);
+			data.get(3)[0] = String.valueOf(700);
+			data.get(3)[1] = String.valueOf(1.013);
+			data.get(3)[2] = String.valueOf(0.988);
+			data.get(3)[3] = String.valueOf(0.505);
 			break;
 		case "Normal":
-			data.get(3)[0] = String.valueOf(144);
-			data.get(3)[1] = String.valueOf(1.124);
-			data.get(3)[2] = String.valueOf(0.888);
-			data.get(3)[3] = String.valueOf(0.539);
+			data.get(3)[0] = String.valueOf(500);
+			data.get(3)[1] = String.valueOf(1.013);
+			data.get(3)[2] = String.valueOf(0.988);
+			data.get(3)[3] = String.valueOf(0.505);
 			break;
 		case "Low":
-			data.get(3)[0] = String.valueOf(144);
-			data.get(3)[1] = String.valueOf(1.124);
-			data.get(3)[2] = String.valueOf(0.888);
-			data.get(3)[3] = String.valueOf(0.539);
+			data.get(3)[0] = String.valueOf(200);
+			data.get(3)[1] = String.valueOf(1.013);
+			data.get(3)[2] = String.valueOf(0.988);
+			data.get(3)[3] = String.valueOf(0.505);
 			break;
 		}
 		CSVwriter.writeAll(INPUT_DIR + DIR_PREFIX + caseNum +"/" +fileName, data, false);
