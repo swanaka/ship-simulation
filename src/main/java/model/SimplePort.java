@@ -76,8 +76,11 @@ public class SimplePort extends Port {
 			if(berthingShip.getSchedule().isLoading)loading();
 			if(berthingShip.getSchedule().isUnLoading) unloading();
 			if(berthingShip.getSchedule().isBunkering) bunkering();
-			//berthingShip.owner.addCashFlow(-1*this.berthingFee);
-			getOperator().addBerthingCash(this.berthingFee);
+			if(time > 500){
+				berthingShip.owner.addCashFlow(-1*this.berthingFee);
+				getOperator().addBerthingCash(this.berthingFee);
+			}
+
 		}
 
 		public void loading(){
@@ -119,7 +122,8 @@ public class SimplePort extends Port {
 					fuelPrice = fuel.getPrice();
 				}
 			}
-			getOperator().addBunkeringCash(fuelPrice * bunkeringAmount);
+			getOperator().addBunkeringCash(fuelPrice * bunkeringAmount / 1.2 * 0.2);
+			this.berthingShip.addCashFlow(-1 * fuelPrice * bunkeringAmount);
 			if (berthingShip.getAmountOfFuel() == berthingShip.getFuelTank().getCapacity()){
 				this.berthingShip.getSchedule().setBunkering(false);
 			}

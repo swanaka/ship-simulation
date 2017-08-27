@@ -29,7 +29,7 @@ public abstract class PortOperator {
 	}
 
 	public double getCashFlow() {
-		return cashFlow;
+		return bunkeringCash + berthingCash;
 	}
 
 	public void setCashFlow(double cashFlow) {

@@ -77,7 +77,7 @@ public class SimpleShip extends Ship {
 				double revenue = currentSchedule.getIncome();
 				super.owner.addCashFlow(revenue);
 				this.addCashFlow(revenue);
-				System.out.println("Revenue " + revenue);
+				this.totalFuelPrice = this.totalFuel * Market.getPrice(this.getFuelType());
 			}
 		}
 

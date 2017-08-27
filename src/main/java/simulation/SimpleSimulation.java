@@ -23,7 +23,6 @@ public class SimpleSimulation extends Simulation{
 	public SimpleSimulation(int endTime, String outputDir) {
 		super(endTime);
 		if(outputDir != null) this.OUTPUT_DIR = outputDir;
-		
 	}
 
 	@Override
@@ -41,7 +40,6 @@ public class SimpleSimulation extends Simulation{
 				outputList.add("Remaining Desitance");
 				outputList.add("Berthing Port");
 			}
-			
 			outputList.add("");
 			outputList.add("Freight");
 			outputList.add("HFO Price");
@@ -89,9 +87,7 @@ public class SimpleSimulation extends Simulation{
 			outputList.add(String.valueOf(lngPrice));
 			CSVwriter.write(OUTPUT_DIR + OUTPUT_CSV_FILE, outputList, true);
 		}
-		
 		System.out.println("Now: " + now + " Saved!");
-
 	}
 
 	@Override
@@ -108,11 +104,11 @@ public class SimpleSimulation extends Simulation{
 		double totalSox = 0;
 		double totalWaitingTime = 0;
 		outputList.add("Overall Result");
-		
+
 		CSVwriter.write(OUTPUT_DIR + OUTPUT_ALL_RESULT, outputList, false);
-		
+
 		outputList = new ArrayList<String>();
-		
+		double totalFuelCost = 0;
 		for(Ship ship : ships){
 			outputList.add("Total Cargo Amount");
 			outputList.add("Total Transported Distance");
@@ -126,7 +122,7 @@ public class SimpleSimulation extends Simulation{
 			outputList.add("");
 			CSVwriter.write(OUTPUT_DIR + OUTPUT_ALL_RESULT, outputList, true);
 	 		outputList = new ArrayList<String>();
-			
+
 			double totalCargo = ship.getTotalCargo();
 			outputList.add(String.valueOf(totalCargo));
 			double totalDistance = ship.getTotalDistance();
@@ -146,27 +142,27 @@ public class SimpleSimulation extends Simulation{
 			double waitingTime = ship.getWaitingTime();
 			outputList.add(String.valueOf(waitingTime));
 			outputList.add("");
-			
+
 			TTTM += totalCargo * totalDistance;
 			if(totalCargo * totalDistance != 0) TECU += totalFuel / (totalCargo * totalDistance);
+			totalFuelCost += ship.getTotalFuelPricise();
 			totalSales += shipRevenue;
 			totalCo2 += co2;
 			totalSox += sox;
 			totalNox += nox;
 			totalWaitingTime += waitingTime;
-			
+
 			CSVwriter.write(OUTPUT_DIR + OUTPUT_ALL_RESULT, outputList, true);
-	 		outputList = new ArrayList<String>();
+			outputList = new ArrayList<String>();
 		}
-		double totalFuelCost = 0;
 		for(Port port : ports){
 			outputList.add("Port Name");
 			outputList.add("Total Berthing Revenu");
 			outputList.add("Total Bunkering Revenu");
 			outputList.add("");
 			CSVwriter.write(OUTPUT_DIR + OUTPUT_ALL_RESULT, outputList, true);
-	 		outputList = new ArrayList<String>();
-			
+			outputList = new ArrayList<String>();
+
 			outputList.add(port.getOperator().getName());
 			double berthingRevenue = port.getOperator().getBerthingCash();
 			double bunkeringRevenue = port.getOperator().getBunkeringCash();
@@ -174,7 +170,7 @@ public class SimpleSimulation extends Simulation{
 			outputList.add(String.valueOf(bunkeringRevenue));
 			totalSales += berthingRevenue;
 			totalSales += bunkeringRevenue;
-			totalFuelCost += bunkeringRevenue;
+			//totalFuelCost += bunkeringRevenue;
 			outputList.add("");
 			CSVwriter.write(OUTPUT_DIR + OUTPUT_ALL_RESULT, outputList, true);
 	 		outputList = new ArrayList<String>();
@@ -188,6 +184,9 @@ public class SimpleSimulation extends Simulation{
 		outputList.add("Total NOx Emission");
 		outputList.add("Total SOx Emission");
 		outputList.add("Total Waiting Time");
+		outputList.add("Ship Operator Revenue");
+		outputList.add("Port1 Operator Revenue");
+		outputList.add("Port2 Operator Revenue");
 		CSVwriter.write(OUTPUT_DIR + OUTPUT_ALL_RESULT, outputList, true);
  		outputList = new ArrayList<String>();
 		
@@ -199,14 +198,13 @@ public class SimpleSimulation extends Simulation{
 		outputList.add(String.valueOf(totalNox));
 		outputList.add(String.valueOf(totalSox));
 		outputList.add((String.valueOf(totalWaitingTime)));
+		outputList.add(String.valueOf(ships.get(0).getOwner().getCashFlow()));
+		outputList.add(String.valueOf(PortNetwork.getPorts().get(0).getOperator().getCashFlow()));
+		outputList.add(String.valueOf(PortNetwork.getPorts().get(1).getOperator().getCashFlow()));
 		outputListAll.addAll(outputList);
  		CSVwriter.write(OUTPUT_DIR + OUTPUT_ALL_RESULT, outputList, true);
  		CSVwriter.write(OUTPUT_DIR_ROOT + OUTPUT_OVERALL_RESULT, outputListAll, true);
 		System.out.println("Overall Result Saved!");
 
 	}
-	
-	
-	
-
 }

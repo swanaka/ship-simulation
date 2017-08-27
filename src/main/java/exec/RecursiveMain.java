@@ -37,6 +37,8 @@ public class RecursiveMain {
 		outputListAll.add("Total NOx Emission");
 		outputListAll.add("Total SOx Emission");
 		outputListAll.add("Total Waiting Time");
+		outputListAll.add("Ship Operator Revenue");
+		outputListAll.add("Port Revenue");
 		CSVwriter.write(OUTPUT_DIR_ROOT + OUTPUT_OVERALL_RESULT, outputListAll, false);
 		List<String[]> data = CSVReader.forGeneral(INPUT_DIR + input);
 		for(String[] elem : data){
@@ -44,14 +46,15 @@ public class RecursiveMain {
 			String hfo = elem[1];
 			String lsfo = elem[2];
 			String lng = elem[3];
-			String port1 = elem[4];
-			String port2 = elem[5];
-			String port3 = elem[6];
-			String trend = elem[7];
-			String volatility = elem[8];
+			String port1LNG = elem[4];
+			String port1LSFO = elem[5];
+			String port2LNG = elem[6];
+			String port2LSFO = elem[7];
+			String trend = elem[8];
+			String volatility = elem[9];
 			if(!caseNum.equals("CASE")){
 				makeDir(caseNum);
-				makeInputFile(caseNum,hfo,lsfo,lng,port1,port2,port3, trend, volatility);
+				makeInputFile(caseNum,hfo,lsfo,lng,port1LNG,port1LSFO,port2LNG,port2LSFO, trend, volatility);
 				execOneShot(INPUT_DIR + DIR_PREFIX+caseNum, endTime);
 			}
 		}
@@ -66,11 +69,11 @@ public class RecursiveMain {
 		}
 	}
 	
-	private static void makeInputFile(String caseNum, String hfo, String lsfo,String lng,String port1,String port2,String port3,String trend, String volatility){
+	private static void makeInputFile(String caseNum, String hfo, String lsfo,String lng,String port1LNG,String port1LSFO,String port2LNG,String port2LSFO,String trend, String volatility){
 		File dir = new File(INPUT_DIR + DIR_PREFIX + caseNum);
 		if(dir.exists()){
 			makeFleetConfig(caseNum,hfo,lsfo,lng);
-			makePortConfig(caseNum,port1, port2,port3);
+			makePortConfig(caseNum,port1LNG, port1LSFO,port2LNG, port2LSFO);
 			makeFreightConfig(caseNum);
 			makeFuelpriceConfig(caseNum,trend,volatility);
 			makeDemandConfig(caseNum);
@@ -131,13 +134,14 @@ public class RecursiveMain {
 		CSVwriter.writeAll(outputFileName, outputData, false);
 	}
 	
-	private static void makePortConfig(String caseNum, String port1, String port2, String port3){
+	private static void makePortConfig(String caseNum, String port1LNG, String port1LSFO, String port2LNG, String port2LSFO){
 		String fileName = "port_config.csv";
 		
 		List<String[]> data = CSVReader.forGeneral(portFile);
-		data.get(7)[0] = port1;
-		data.get(18)[0] = port2;
-		data.get(29)[0] = port3;
+		data.get(7)[0] = port1LNG;
+		data.get(10)[0] = port1LSFO;
+		data.get(18)[0] = port2LNG;
+		data.get(21)[0] = port2LSFO;
 		CSVwriter.writeAll(INPUT_DIR + DIR_PREFIX + caseNum +"/"+ fileName, data, false);
 	}
 	
@@ -149,20 +153,20 @@ public class RecursiveMain {
 		switch(trend){
 		case "High":
 			data.get(3)[0] = String.valueOf(700);
-			data.get(3)[1] = String.valueOf(1.013);
-			data.get(3)[2] = String.valueOf(0.988);
+			data.get(3)[1] = String.valueOf(1.0);
+			data.get(3)[2] = String.valueOf(1.0);
 			data.get(3)[3] = String.valueOf(0.505);
 			break;
 		case "Normal":
 			data.get(3)[0] = String.valueOf(500);
-			data.get(3)[1] = String.valueOf(1.013);
-			data.get(3)[2] = String.valueOf(0.988);
+			data.get(3)[1] = String.valueOf(1.0);
+			data.get(3)[2] = String.valueOf(1.0);
 			data.get(3)[3] = String.valueOf(0.505);
 			break;
 		case "Low":
-			data.get(3)[0] = String.valueOf(200);
-			data.get(3)[1] = String.valueOf(1.013);
-			data.get(3)[2] = String.valueOf(0.988);
+			data.get(3)[0] = String.valueOf(400);
+			data.get(3)[1] = String.valueOf(1.0);
+			data.get(3)[2] = String.valueOf(1.0);
 			data.get(3)[3] = String.valueOf(0.505);
 			break;
 		}

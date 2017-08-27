@@ -24,7 +24,7 @@ public abstract class Simulation {
 		save(-1);
 		while(now <= endTime){
 			timeNext();
-			save(now);
+			//save(now);
 			now++;
 		}
 		save();
@@ -41,10 +41,7 @@ public abstract class Simulation {
 		Fleet.timeNext();
 		//4 Update ports' situation
 		PortNetwork.timeNext();
-		
-		
 	}
-	
 	
 	//Getter and Setter
 	public int getStartTime() {

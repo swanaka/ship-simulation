@@ -36,6 +36,7 @@ public abstract class Ship {
 	protected double speed;
 	protected int time;
 	protected double totalFuel;
+	protected double totalFuelPrice;
 	protected double totalDistance;
 	protected double totalCargo;
 	protected double acumCost;
@@ -55,6 +56,12 @@ public abstract class Ship {
 		time = 0;
 		berthingPort = null;
 	}
+	public void setTotalFuelPricise(double fuel){
+		this.totalFuelPrice = fuel;
+	}
+	public double getTotalFuelPricise(){
+		return this.totalFuelPrice;
+	}
 	//Function
 	public void timeNext(){
 		this.time++;
@@ -66,7 +73,12 @@ public abstract class Ship {
 					PortFacility facility = port.checkBerthing(this);
 					if(facility == null) {
 						setShipStatus(ShipStatus.WAIT);
-						if(this.time > 500) this.waitingTime ++;
+
+						if(this.time > 500) {
+							this.waitingTime ++;
+							this.acumCost += this.operatingCost;
+							this.totalCost += this.operatingCost;
+						}
 					}
 					if(facility != null){
 						facility.accept(this);
@@ -81,7 +93,11 @@ public abstract class Ship {
 				PortFacility facility = port.checkBerthing(this);
 				if(facility == null){
 					setShipStatus(ShipStatus.WAIT);
-					if(this.time > 500) this.waitingTime ++;
+					if(this.time > 500) {
+						this.waitingTime ++;
+						this.acumCost += this.operatingCost;
+						this.totalCost += this.operatingCost;
+					}
 				}
 				if(!(facility == null)){
 					facility.accept(this);

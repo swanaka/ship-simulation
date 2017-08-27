@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import model.Status.CargoType;
+import model.Status.FuelType;
 
 public class Market {
 	protected static List<FuelPrice> fuels;
@@ -51,6 +52,14 @@ public class Market {
 
 	}
 
+	public static double getPrice(FuelType type){
+		for(FuelPrice fuel : fuels){
+			if(type == fuel.getFuelType()){
+				return fuel.getPrice();
+			}
+		}
+		return 0;
+	}
 	public static List<FuelPrice> getFuels(){
 		return fuels;
 	}
