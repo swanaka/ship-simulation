@@ -97,18 +97,18 @@ public class SimpleShip extends Ship {
 		double soxcoeff = 0;
 		double co2coeff = 0;
 		if(this.getFuelType() == FuelType.LNG){
-			noxcoeff = 9;
+			noxcoeff = 0.0009;
 			soxcoeff = 0;
-			co2coeff = 2.7;
+			co2coeff = 2.75;
 			
 		}else if (this.getFuelType() == FuelType.HFO){
-			noxcoeff = 9;
-			soxcoeff = 2;
-			co2coeff = 3;
+			noxcoeff = 0.0045;
+			soxcoeff = 0;
+			co2coeff = 3.1;
 		}else if (this.getFuelType() == FuelType.LSFO){
-			noxcoeff = 9;
-			soxcoeff = 2;
-			co2coeff = 3;
+			noxcoeff = 0.0045;
+			soxcoeff = 0.0006;
+			co2coeff = 3.2;
 		}
 		this.nox += foc * noxcoeff;
 		this.sox += foc * soxcoeff;
