@@ -105,7 +105,7 @@ public class RecursiveMain {
 		String[] row1 = {"shipName"};
 		String[] row2 = {"Ship_1"};
 		String[] row3 = {"speed","cargoType","cargoAmount", "foc", "fuelCapacity","fuelType","initialType","OperatingCost"};
-		String[] row4HFO = {"28","OIL","300000","0.36","5000","HFO","Japan","15000"};
+		String[] row4HFO = {"28","OIL","240000","0.36","5000","HFO","Japan","15000"};
 		String[] row4LSFO = {"28","OIL","300000","0.32","5000","LSFO","Japan","15000"};
 		String[] row4LNG = {"28","OIL","300000","0.29","5000","LNG","Japan","15000"};
 		templateHFO.add(row1);
@@ -152,19 +152,19 @@ public class RecursiveMain {
 		
 		switch(trend){
 		case "High":
-			data.get(3)[0] = String.valueOf(700);
+			data.get(3)[0] = String.valueOf(870);
 			data.get(3)[1] = String.valueOf(1.0);
 			data.get(3)[2] = String.valueOf(1.0);
 			data.get(3)[3] = String.valueOf(0.505);
 			break;
 		case "Normal":
-			data.get(3)[0] = String.valueOf(500);
+			data.get(3)[0] = String.valueOf(720);
 			data.get(3)[1] = String.valueOf(1.0);
 			data.get(3)[2] = String.valueOf(1.0);
 			data.get(3)[3] = String.valueOf(0.505);
 			break;
 		case "Low":
-			data.get(3)[0] = String.valueOf(400);
+			data.get(3)[0] = String.valueOf(570);
 			data.get(3)[1] = String.valueOf(1.0);
 			data.get(3)[2] = String.valueOf(1.0);
 			data.get(3)[3] = String.valueOf(0.505);
