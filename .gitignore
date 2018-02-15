@@ -1,6 +1,9 @@
 /bin/
 /doc/
 
+# gitkeep
+!.gitkeep
+
 # Java
 *.class
 *.jar
