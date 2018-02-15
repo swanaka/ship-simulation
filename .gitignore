@@ -2,6 +2,7 @@
 /doc/
 
 # gitkeep
+data/*
 !.gitkeep
 
 # Java
@@ -30,7 +31,6 @@ Thumbs.db
 out
 build
 bin
-data
 
 # Other
 *.log
