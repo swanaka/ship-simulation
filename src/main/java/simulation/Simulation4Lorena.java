@@ -9,9 +9,10 @@ import model.Market;
 import model.Port;
 import model.PortNetwork;
 import model.Ship;
+import util.CAPEXCalculator;
 import util.CSVwriter;
 
-public class SimpleSimulation extends Simulation{
+public class Simulation4Lorena extends Simulation{
 
 	private String OUTPUT_DIR = "./data/";
 	private String OUTPUT_DIR_ROOT = "./data/";
@@ -19,10 +20,12 @@ public class SimpleSimulation extends Simulation{
 	
 	private final String OUTPUT_ALL_RESULT = "result_all.csv";
 	private final String OUTPUT_OVERALL_RESULT = "result_overall.csv";
+	private CAPEXCalculator calcultaor;
 
-	public SimpleSimulation(int endTime, String outputDir) {
+	public Simulation4Lorena(int endTime, String outputDir, CAPEXCalculator calculator) {
 		super(endTime);
 		if(outputDir != null) this.OUTPUT_DIR = outputDir;
+		this.calcultaor = calculator;
 	}
 
 	@Override
@@ -37,9 +40,9 @@ public class SimpleSimulation extends Simulation{
 				outputList.add("Cargo Type");
 				outputList.add("Amount of Cargo");
 				outputList.add("Amount of Fuel");
+				outputList.add("Total Fuel Cost");
 				outputList.add("Remaining Desitance");
 				outputList.add("Berthing Port");
-
 			}
 			outputList.add("");
 			outputList.add("Freight");
@@ -57,6 +60,7 @@ public class SimpleSimulation extends Simulation{
 				outputList.add(String.valueOf(ship.getCargoType()));
 				outputList.add(String.valueOf(ship.getAmountOfCargo()));
 				outputList.add(String.valueOf(ship.getAmountOfFuel()));
+				outputList.add(String.valueOf(ship.getTotalFuelPricise()));
 				outputList.add(String.valueOf(ship.getRemainingDistance()));
 				if(ship.getBerthingPort()!=null){
 					outputList.add(ship.getBerthingPort().getName());
@@ -114,7 +118,7 @@ public class SimpleSimulation extends Simulation{
 			outputList.add("Total Cargo Amount");
 			outputList.add("Total Transported Distance");
 			outputList.add("Fuel Type");
-			outputList.add("Total Fuel Consumption");
+			outputList.add("Total Fuel Cost");
 			outputList.add("Total Cost");
 			outputList.add("CO2");
 			outputList.add("SOx");
@@ -129,7 +133,7 @@ public class SimpleSimulation extends Simulation{
 			double totalDistance = ship.getTotalDistance();
 			outputList.add(String.valueOf(totalDistance));
 			outputList.add(String.valueOf(ship.getFuelType()));
-			double totalFuel = ship.getTotalFuel();
+			double totalFuel = ship.getTotalFuelPricise();
 			outputList.add(String.valueOf(totalFuel));
 			double shipCost = ship.getTotalCost();
 			double shipRevenue = ship.getCashFlow();
@@ -142,9 +146,10 @@ public class SimpleSimulation extends Simulation{
 			outputList.add(String.valueOf(nox));
 			double waitingTime = ship.getWaitingTime();
 			outputList.add(String.valueOf(waitingTime));
+			outputList.add(String.valueOf(ship.getTotalTonKm()));
 			outputList.add("");
 
-			TTTM += totalCargo * totalDistance;
+			TTTM += ship.getTotalTonKm();
 			if(totalCargo * totalDistance != 0) TECU += totalFuel / (totalCargo * totalDistance);
 			totalFuelCost += ship.getTotalFuelPricise();
 			totalSales += shipRevenue;
@@ -178,30 +183,24 @@ public class SimpleSimulation extends Simulation{
 		}
 		
 		outputList.add("System's ilities");
-		outputList.add("Total Transported Ton Km");
-		outputList.add("Total Energy Consumption Unit");
-		outputList.add("Total Fuel Cost[$]");
-		outputList.add("Total CO2 Emission");
-		outputList.add("Total NOx Emission");
-		outputList.add("Total SOx Emission");
-		outputList.add("Total Waiting Time");
-		outputList.add("Ship Operator Revenue");
-		outputList.add("Port1 Operator Revenue");
-		outputList.add("Port2 Operator Revenue");
+		outputList.add("Fuel efficiency");
+		outputList.add("Total CO2 Emission rate");
+		outputList.add("Total NOx Emission rate");
+		outputList.add("Total SOx Emission rate");
+		outputList.add("Total Waiting Time rate");
+		outputList.add("InitialCost");
 		CSVwriter.write(OUTPUT_DIR + OUTPUT_ALL_RESULT, outputList, true);
  		outputList = new ArrayList<String>();
 		
 		outputList.add("");
-		outputList.add(String.valueOf(TTTM));
-		outputList.add(String.valueOf(TECU));
-		outputList.add(String.valueOf(totalFuelCost));
-		outputList.add(String.valueOf(totalCo2));
-		outputList.add(String.valueOf(totalNox));
-		outputList.add(String.valueOf(totalSox));
-		outputList.add((String.valueOf(totalWaitingTime)));
-		outputList.add(String.valueOf(ships.get(0).getOwner().getCashFlow()));
-		outputList.add(String.valueOf(PortNetwork.getPorts().get(0).getOperator().getCashFlow()));
-		outputList.add(String.valueOf(PortNetwork.getPorts().get(1).getOperator().getCashFlow()));
+		System.out.println(String.valueOf(totalFuelCost));
+		System.out.println(String.valueOf(TTTM));
+		outputList.add(String.valueOf(totalFuelCost/TTTM));
+		outputList.add(String.valueOf(totalCo2/TTTM));
+		outputList.add(String.valueOf(totalNox/TTTM));
+		outputList.add(String.valueOf(totalSox/TTTM));
+		outputList.add((String.valueOf(totalWaitingTime/(this.getEndTime()-8760)/20*100)));
+		outputList.add(String.valueOf(this.calcultaor.calculate()));
 		outputListAll.addAll(outputList);
  		CSVwriter.write(OUTPUT_DIR + OUTPUT_ALL_RESULT, outputList, true);
  		CSVwriter.write(OUTPUT_DIR_ROOT + OUTPUT_OVERALL_RESULT, outputListAll, true);

@@ -41,7 +41,6 @@ public class CSVReader {
 		List<String[]> returnList = new ArrayList<String[]>(); 
 		try {
 			String path = new File(".").getAbsoluteFile().getParent();
-	        System.out.println(path);
 			File f =  new File(filePath);
 			BufferedReader br = new BufferedReader(new FileReader(f));
 			

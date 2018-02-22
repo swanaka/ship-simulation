@@ -14,15 +14,19 @@ import model.Status.FuelType;
  * @author Shinnosuke Wanaka
  */
 public class SimpleShip extends Ship {
-
-	public SimpleShip(double speed, CargoType cargoType, double cargoAmount, double foc, double fuelCapacity, FuelType fuelType, Port initialPort, double operatingCost){
+	public SimpleShip(double speed, CargoType cargoType, double cargoAmount, double foc, double fuelCapacity, FuelType fuelType, Port initialPort, double operatingCost, boolean scrubber, boolean gasDiesel){
 		super();
 		this.schedule = new ArrayList<Schedule>();
 		this.speed = speed;
 		this.fuelTank = new HFOTank();
 		this.fuelTank.setCapacity(fuelCapacity);
 		this.fuelTank.setFuelType(fuelType);
+		if(fuelType == FuelType.HFOLNG) {
+			this.fuelTank.setTmpType(FuelType.LNG);
+			this.dualfuelFlag = true;
+		}
 		this.setAmountOfFuel(fuelCapacity);
+		this.fuelTank.setSubAmount(fuelCapacity);
 		this.cargoHold = new VLCCCargo();
 		this.cargoHold.setCapacity(cargoAmount);
 		this.cargoHold.setCargoType(cargoType);
@@ -30,8 +34,13 @@ public class SimpleShip extends Ship {
 		Schedule initialSchedule = new SimpleSchedule(0,0,initialPort,initialPort);
 		this.schedule.add(initialSchedule);
 		this.setOperatingCost(operatingCost);
+		this.scrubber = scrubber;
+		this.gasdieselFlag = gasDiesel;
 	}
-
+	
+	public void setBunkeringPort(Port port) {
+		this.bunkeringPort = port;
+	}
 	@Override
 	public void transport() {
 
@@ -50,16 +59,20 @@ public class SimpleShip extends Ship {
 		double actualDis = speed;
 		if(this.remainingDistance < actualDis){
 			this.totalDistance += this.remainingDistance;
+			this.totalTonKm += this.remainingDistance * this.getAmountOfCargo();
 		}else{
 			this.totalDistance += actualDis;
+			this.totalTonKm += actualDis * this.getSchedule().getCargoAmount();
 		}
 		this.setRemainingDistance(this.remainingDistance - actualDis);
-		if(this.amountOfFuel < foc * speed){
-			this.totalFuel += this.amountOfFuel;
+		if(this.fuelTank.getAmount() < foc * speed){
+			this.totalFuel += this.fuelTank.getAmount();
+			this.totalFuelPrice += this.fuelTank.getAmount() *  this.fuelPrice;
 		}else{
 			this.totalFuel += foc * speed;
+			this.totalFuelPrice += foc * speed *  this.fuelPrice;
 		}
-		this.setAmountOfFuel(this.amountOfFuel - foc * speed);
+		this.setAmountOfFuel(this.fuelTank.getAmount() - foc * speed);
 		calcGasEmission(foc * speed);
 		this.acumCost += this.getOperatingCost();
 		this.totalCost += this.getOperatingCost();
@@ -68,16 +81,13 @@ public class SimpleShip extends Ship {
 
 	@Override
 	public void appropriateRevenue() {
-		//TO-DO
 		if(this.schedule.size() == 0) return;
 		else {
-			
 			Schedule currentSchedule = this.schedule.get(0);
 			if (currentSchedule.getDestination().equals(this.berthingPort) && currentSchedule.fee != 0){
 				double revenue = currentSchedule.getIncome();
 				super.owner.addCashFlow(revenue);
 				this.addCashFlow(revenue);
-				this.totalFuelPrice = this.totalFuel * Market.getPrice(this.getFuelType());
 			}
 		}
 
@@ -97,14 +107,24 @@ public class SimpleShip extends Ship {
 		double soxcoeff = 0;
 		double co2coeff = 0;
 		if(this.getFuelType() == FuelType.LNG){
-			noxcoeff = 0.0009;
+			if(this.gasdieselFlag) {
+				noxcoeff = 0.00135;
+			}else {
+				noxcoeff = 0.0009;
+			}
 			soxcoeff = 0;
 			co2coeff = 2.75;
 			
 		}else if (this.getFuelType() == FuelType.HFO){
-			noxcoeff = 0.0045;
-			soxcoeff = 0;
-			co2coeff = 3.1;
+			if(!scrubber) {
+				noxcoeff = 0.0045;
+				soxcoeff = 0.012;
+				co2coeff = 3.1;
+			}else {
+				noxcoeff = 0.0045;
+				soxcoeff = 0;
+				co2coeff = 3.1;
+			}
 		}else if (this.getFuelType() == FuelType.LSFO){
 			noxcoeff = 0.0045;
 			soxcoeff = 0.0006;
@@ -162,49 +182,118 @@ public class SimpleShip extends Ship {
 
 	}
 
-	public class HFOTank extends FuelTank{}
+	public class HFOTank extends FuelTank{
+		public HFOTank() {
+			this.amount = 0;
+			this.subAmount = 0;
+		}
+	}
 	public class VLCCCargo extends CargoHold{}
 
 	@Override
 	public void addSchedule(int startTime, int endTime, Port departure, Port destination, double amount) {
+		
 		Port previousPort = null;
 		if (this.getLastSchedule() == null) previousPort = this.berthingPort;
 		else previousPort = this.getLastSchedule().getDestination();
+		
+		if(detourFlag) {
+			if(previousPort.equals(departure)) {
+				this.getLastSchedule().setLoading(true);
+				this.getLastSchedule().setLoadingType(this.getCargoType());
+				this.getLastSchedule().setLoadingAmount(amount);;
+				this.getLastSchedule().setBunkering(true);
+				
+				Schedule schedule = new SimpleSchedule(startTime,endTime,departure,this.bunkeringPort);
+				schedule.setUnLoading(false);
+				schedule.setBunkering(true);
+				schedule.setFee(-1);
+				schedule.setPenalty(-1);
+				schedule.setCargoAmount(amount);
+				this.schedule.add(schedule);
+				
+				schedule = new SimpleSchedule(startTime, endTime, this.bunkeringPort, destination);
+				schedule.setUnLoading(true);
+				schedule.setBunkering(false);
+				schedule.setFee(-1);
+				schedule.setPenalty(-1);
+				schedule.setCargoAmount(amount);
+				this.schedule.add(schedule);
+				
+				
+			}else {
+				this.getLastSchedule().setBunkering(false);
+				
+				Schedule schedule = new SimpleSchedule(startTime, endTime, previousPort, this.bunkeringPort);
+				schedule.setBunkering(true);
+				schedule.setFee(-1);
+				schedule.setPenalty(-1);
+				schedule.setCargoAmount(amount);
+				this.schedule.add(schedule);
+				
+				schedule = new SimpleSchedule(startTime, endTime, this.bunkeringPort, departure);
+				schedule.setBunkering(true);
+				schedule.setLoading(true);
+				schedule.setLoadingType(this.getCargoType());
+				schedule.setLoadingAmount(amount);
+				schedule.setFee(-1);
+				schedule.setPenalty(-1);
+				schedule.setCargoAmount(amount);
+				this.schedule.add(schedule);
+				
+				schedule = new SimpleSchedule(startTime, endTime, departure, this.bunkeringPort);
+				schedule.setBunkering(true);
+				schedule.setFee(-1);
+				schedule.setPenalty(-1);
+				schedule.setCargoAmount(amount);
+				this.schedule.add(schedule);
 
-		if(previousPort.equals(departure)){
-			this.getLastSchedule().setLoading(true);
-			this.getLastSchedule().setLoadingType(this.getCargoType());
-			this.getLastSchedule().setLoadingAmount(amount);;
-			this.getLastSchedule().setBunkering(true);
-			this.getLastSchedule().setFuelType(this.getFuelType());
+				schedule = new SimpleSchedule(startTime, endTime, this.bunkeringPort, destination);
+				schedule.setBunkering(false);
+				schedule.setUnLoading(true);
+				schedule.setUnloadingAmount(amount);
+				schedule.setUnloadingType(getCargoType());
+				schedule.setFee(-1);
+				schedule.setPenalty(-1);
+				schedule.setCargoAmount(amount);
+				this.schedule.add(schedule);
+			}
+		}else {
+			if(previousPort.equals(departure)){
+				this.getLastSchedule().setLoading(true);
+				this.getLastSchedule().setLoadingType(this.getCargoType());
+				this.getLastSchedule().setLoadingAmount(amount);;
+				this.getLastSchedule().setBunkering(true);
 
-			Schedule schedule = new SimpleSchedule(startTime,endTime,departure,destination);
-			schedule.setUnLoading(true);
-			schedule.setUnloadingAmount(amount);
-			schedule.setUnloadingType(getCargoType());
-			schedule.setFee(-1);
-			schedule.setPenalty(-1);
-			this.schedule.add(schedule);
-		}else{
-			this.getLastSchedule().setBunkering(true);
-			this.getLastSchedule().setFuelType(this.getFuelType());
+				Schedule schedule = new SimpleSchedule(startTime,endTime,departure,destination);
+				schedule.setUnLoading(true);
+				schedule.setUnloadingAmount(amount);
+				schedule.setUnloadingType(getCargoType());
+				schedule.setFee(-1);
+				schedule.setPenalty(-1);
+				schedule.setCargoAmount(amount);
+				this.schedule.add(schedule);
+			}else{
+				this.getLastSchedule().setBunkering(true);
 
-			// departureをprevious portに変更 KS
-			Schedule schedule = new SimpleSchedule(startTime,endTime,previousPort,departure);
-			schedule.setLoading(true);
-			schedule.setLoadingAmount(amount);
-			schedule.setLoadingType(getCargoType());
-			schedule.setBunkering(true);
-			schedule.setFuelType(getFuelType());
-			this.schedule.add(schedule);
+				// departureをprevious portに変更 KS
+				Schedule schedule = new SimpleSchedule(startTime,endTime,previousPort,departure);
+				schedule.setLoading(true);
+				schedule.setLoadingAmount(amount);
+				schedule.setLoadingType(getCargoType());
+				schedule.setBunkering(true);
+				schedule.setCargoAmount(amount);
+				this.schedule.add(schedule);
 
-			schedule = new SimpleSchedule(startTime,endTime,departure,destination);
-			schedule.setUnLoading(true);
-			schedule.setUnloadingAmount(amount);
-			schedule.setUnloadingType(getCargoType());
-			schedule.setFee(-1);
-			schedule.setPenalty(-1);
-			this.schedule.add(schedule);
+				schedule = new SimpleSchedule(startTime,endTime,departure,destination);
+				schedule.setUnLoading(true);
+				schedule.setUnloadingAmount(amount);
+				schedule.setUnloadingType(getCargoType());
+				schedule.setFee(-1);
+				schedule.setPenalty(-1);
+				schedule.setCargoAmount(amount);
+				this.schedule.add(schedule);
+			}
 		}
 	}
 

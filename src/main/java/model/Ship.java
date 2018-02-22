@@ -19,11 +19,15 @@ public abstract class Ship {
 	protected CargoHold cargoHold;
 	protected String name;
 	private double operatingCost;
+	protected boolean scrubber;
+	protected boolean gasdieselFlag;
+	protected boolean dualfuelFlag;
+	protected boolean detourFlag;
+	protected Port bunkeringPort;
 
 	//Status of ship
 	protected Location loc;
 	protected Port berthingPort;
-	protected double amountOfFuel;
 	protected double ratioOfAccident;
 	protected double amountOfCargo;
 	protected double remainingDistance;
@@ -41,9 +45,10 @@ public abstract class Ship {
 	protected double totalCargo;
 	protected double acumCost;
 	protected double totalCost;
+	protected double totalTonKm;
+	protected double fuelPrice;
 	
 	public Ship(){
-		amountOfFuel = 0;
 		ratioOfAccident = 0;
 		amountOfCargo = 0;
 		remainingDistance = 0;
@@ -74,7 +79,7 @@ public abstract class Ship {
 					if(facility == null) {
 						setShipStatus(ShipStatus.WAIT);
 
-						if(this.time > 500) {
+						if(this.time > 8760) {
 							this.waitingTime ++;
 							this.acumCost += this.operatingCost;
 							this.totalCost += this.operatingCost;
@@ -93,7 +98,7 @@ public abstract class Ship {
 				PortFacility facility = port.checkBerthing(this);
 				if(facility == null){
 					setShipStatus(ShipStatus.WAIT);
-					if(this.time > 500) {
+					if(this.time > 8760) {
 						this.waitingTime ++;
 						this.acumCost += this.operatingCost;
 						this.totalCost += this.operatingCost;
@@ -120,6 +125,19 @@ public abstract class Ship {
 				break;
 		}
 
+	}
+
+	public boolean isDetourFlag() {
+		return detourFlag;
+	}
+	public void setDetourFlag(boolean detourFlag) {
+		this.detourFlag = detourFlag;
+	}
+	public boolean isDualfuelFlag() {
+		return dualfuelFlag;
+	}
+	public void setDualfuelFlag(boolean dualfuelFlag) {
+		this.dualfuelFlag = dualfuelFlag;
 	}
 	public double getNox() {
 		return nox;
@@ -169,6 +187,25 @@ public abstract class Ship {
 	public void setAcumCost(double acumCost) {
 		this.acumCost = acumCost;
 	}
+	public double getFuelPrice() {
+		return fuelPrice;
+	}
+	public void setFuelPrice(double fuelPrice) {
+		this.fuelPrice = fuelPrice;
+	}
+	public void setBunkeringPort(Port port) {
+		this.bunkeringPort = port;
+	}
+	public Port getBunkeringPort() {
+		return this.bunkeringPort;
+	}
+
+	public double getTotalTonKm() {
+		return totalTonKm;
+	}
+	public void setTotalTonKm(double totalTonKm) {
+		this.totalTonKm = totalTonKm;
+	}
 	public abstract void transport();
 	public abstract void appropriateRevenue();
 	public abstract void addSchedule(int startTime, int endTime, Port departure, Port destination, double amount);
@@ -195,17 +232,17 @@ public abstract class Ship {
 	}
 
 	public double getAmountOfFuel() {
-		return amountOfFuel;
+		return this.fuelTank.getAmount();
 	}
 
 	public void setAmountOfFuel(double amountOfFuel) {
 		if (amountOfFuel > this.fuelTank.capacity){
-			this.amountOfFuel = this.fuelTank.capacity;
+			this.fuelTank.setAmount(this.fuelTank.capacity);
 		}else{
-			this.amountOfFuel = amountOfFuel;
+			this.fuelTank.setAmount(amountOfFuel);
 		}
 		if (amountOfFuel < 0){
-			this.amountOfFuel = 0;
+			this.fuelTank.setAmount(0);
 			System.out.println("Short of Fuel!");
 		}
 	}
@@ -341,18 +378,46 @@ public abstract class Ship {
 	public abstract class FuelTank{
 		private FuelType fuelType;
 		private double capacity;
-
+		private FuelType tmpType;
+		protected double amount;
+		protected double subAmount;
+		
 		public FuelType getFuelType(){
-			return fuelType;
+			if(this.fuelType == FuelType.HFOLNG) {
+				if(this.tmpType == null) {
+					return this.fuelType;
+				}else {
+					return this.tmpType;
+				}
+			}else {
+				return fuelType;
+			}
 		}
 		public void setFuelType(FuelType fuelType){
 			this.fuelType = fuelType;
+		}
+		public void setTmpType(FuelType fuelType) {
+			if(this.tmpType != fuelType) {
+				double tmp = this.amount;
+				this.amount = subAmount;
+				this.subAmount = tmp;
+			}
+			this.tmpType = fuelType;
 		}
 		public double getCapacity() {
 			return capacity;
 		}
 		public void setCapacity(double capacity) {
 			this.capacity = capacity;
+		}
+		public double getAmount() {
+			return this.amount;
+		}
+		public void setAmount(double amount) {
+			this.amount = amount;
+		}
+		public void setSubAmount(double amount) {
+			this.subAmount = amount;
 		}
 
 	}
@@ -376,7 +441,6 @@ public abstract class Ship {
 		//bunkering property
 		protected boolean isBunkering;
 		private double bunkeringAmount;
-		private FuelType fuelType;
 		//unloading property
 		protected boolean isUnLoading;
 		private double unloadingAmount;
@@ -384,8 +448,15 @@ public abstract class Ship {
 		//Contract property
 		protected double fee;
 		protected double penalty;
+		protected double cargoAmount;
 
 
+		public double getCargoAmount() {
+			return cargoAmount;
+		}
+		public void setCargoAmount(double cargoAmount) {
+			this.cargoAmount = cargoAmount;
+		}
 		public int getStartTime() {
 			return startTime;
 		}
@@ -455,10 +526,7 @@ public abstract class Ship {
 			this.bunkeringAmount = bunkeringAmount;
 		}
 		public FuelType getFuelType() {
-			return fuelType;
-		}
-		public void setFuelType(FuelType fuelType) {
-			this.fuelType = fuelType;
+			return getFuelType();
 		}
 		public boolean isUnLoading() {
 			return isUnLoading;

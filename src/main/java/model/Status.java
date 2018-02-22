@@ -31,7 +31,8 @@ public class Status {
 		LNG("LNG"), 
 		METHANOL("METHANOL"),
 		HFO("HFO"),
-		LSFO("LSFO");
+		LSFO("LSFO"),
+		HFOLNG("HFO/LNG");
 		
 		private final String name;
 		private FuelType(final String name){

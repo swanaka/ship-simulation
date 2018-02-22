@@ -1,11 +1,13 @@
 package exec;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
 import model.Demand;
 import model.DependedFuel;
+import model.DiscretePrice;
 import model.Fleet;
 import model.Freight;
 import model.FuelPrice;
@@ -21,6 +23,7 @@ import model.SimpleShip;
 import model.SimpleShipOperator;
 import model.Status.CargoType;
 import model.Status.FuelType;
+import model.TimeSeriesPrice;
 import simulation.SimpleSimulation;
 import simulation.Simulation;
 import util.CSVReader;
@@ -56,16 +59,30 @@ public class Main {
 				double fuelCapacity = Double.parseDouble(data.get(i+3)[4]);
 				FuelType fuelType = FuelType.valueOf(data.get(i+3)[5]);
 				Port initialPort = PortNetwork.getPort(data.get(i+3)[6]);
+				Port bunkeringPort = PortNetwork.getPort("Singapore");
 				double cost = Double.parseDouble(data.get(i+3)[7]);
+				boolean scrubber;
+				if (data.get(i+3)[8].equals("Yes")) {
+					scrubber = true;
+				}else {
+					scrubber = false;
+				}
+				boolean gasdiesel;
+				if (data.get(i+3)[9].equals("Yes")) {
+					gasdiesel = true;
+				}else {
+					gasdiesel = false;
+				}
 				// Make instance of SimpleShip class using above input data
-				Ship ship = new SimpleShip(speed, cargoType, cargoAmount, foc, fuelCapacity, fuelType, initialPort, cost);
+				Ship ship = new SimpleShip(speed, cargoType, cargoAmount, foc, fuelCapacity, fuelType, initialPort, cost,scrubber,gasdiesel);
 				ship.setName(name);
 				ship.setOwner(operator);
+				ship.setBunkeringPort(bunkeringPort);
 				Fleet.add(ship);
 				shipCount ++;
 			}
 		}
-		System.out.println(shipCount);
+		System.out.println("Total " + shipCount + " ships loaded.");
 	}
 
 	public static void loadInitialPorts(String configFilePath){
@@ -95,7 +112,6 @@ public class Main {
 				}
 				portCount ++;
 				ports.add(port);
-				System.out.println(portCount);
 			}
 			if (data.get(i)[0].equals("RouteMatrix")){
 				routeMatrix = new double[portCount][portCount];
@@ -106,6 +122,7 @@ public class Main {
 				}
 			}
 		}
+		System.out.println("Total " + portCount + " ports are loaded.");
 		PortNetwork.setPortSettings(ports,routeMatrix);
 	}
 
@@ -142,23 +159,37 @@ public class Main {
 				String name = data.get(i+1)[0];
 				FuelType fuelType = FuelType.valueOf(name);
 				switch(fuelType){
-					case HFO:
 					case LNG:
+//						List<String> timeprices = Arrays.asList(data.get(i+3));
+//						fuelprice = new TimeSeriesPrice(timeprices);
+//						fuelprice.setFuelType(fuelType);
+//						break;
+					case HFO:
+					case LSFO:
+//						double initialPrice = Double.parseDouble(data.get(i+3)[0]);
+//						double upFactor = Double.parseDouble(data.get(i+3)[1]);
+//						double downFactor = Double.parseDouble(data.get(i+3)[2]);
+//						double probability = Double.parseDouble(data.get(i+3)[3]);
+//						fuelprice = new BinomialPrice(initialPrice,upFactor,downFactor,probability);
 						double initialPrice = Double.parseDouble(data.get(i+3)[0]);
-						double upFactor = Double.parseDouble(data.get(i+3)[1]);
-						double downFactor = Double.parseDouble(data.get(i+3)[2]);
-						double probability = Double.parseDouble(data.get(i+3)[3]);
-						fuelprice = new BinomialPrice(initialPrice,upFactor,downFactor,probability);
+						String maxPrice = data.get(i+3)[1];
+						String midPrice = data.get(i+3)[2];
+						String minPrice = data.get(i+3)[3];
+						List<String> prices = new ArrayList<String>();
+						prices.add(maxPrice);
+						prices.add(midPrice);
+						prices.add(minPrice);
+						fuelprice = new DiscretePrice(prices, initialPrice);
 						fuelprice.setFuelType(fuelType);
 						break;
-					case LSFO:
-						coeff = Double.parseDouble(data.get(i+3)[0]);
-						DependedFuel fuel = new DependedFuel();
-						fuel.setCoeff(coeff);
-						fuel.setFuelType(fuelType);
-						fuel.setDependedFuel("HFO");
-						fuelprice = (FuelPrice) fuel;
-						break;
+//					case LSFO:
+//						coeff = Double.parseDouble(data.get(i+3)[0]);
+//						DependedFuel fuel = new DependedFuel();
+//						fuel.setCoeff(coeff);
+//						fuel.setFuelType(fuelType);
+//						fuel.setDependedFuel("HFO");
+//						fuelprice = (FuelPrice) fuel;
+//						break;
 					default:
 						;
 						
@@ -189,7 +220,6 @@ public class Main {
 				// Move plus 4 lines in Reading CSV files. (Read next data)
 				i = i + 4;
 				demandCount ++;
-				System.out.println(demandCount);
 			}
 		}
 	}

@@ -7,7 +7,6 @@ import model.Status.FuelType;
 import model.Status.ShipStatus;
 
 public class SimplePort extends Port {
-
 	public SimplePort(String name){
 		super(name);
 		PortOperator operator = new SimplePortOperator(name);
@@ -17,7 +16,6 @@ public class SimplePort extends Port {
 
 	@Override
 	public void addPortFacility(HashMap<String, String> param){
-		System.out.println(param.get("FuelType"));
 		FuelType fuelType = FuelType.valueOf(param.get("FuelType"));
 		CargoType loadingType = CargoType.valueOf(param.get("LoadingType"));
 		double bunkeringCapacity = Double.parseDouble(param.get("BunkeringCapacity"));
@@ -55,6 +53,7 @@ public class SimplePort extends Port {
 	private class SimplePortFacitliy extends PortFacility{
 
 		private double berthingFee;
+		private double fuelPrice;
 
 		public SimplePortFacitliy(FuelType fuelType, CargoType loadingType, double bunkeringCapacity, double loadingCapacity,
 				double berthingFee){
@@ -69,14 +68,21 @@ public class SimplePort extends Port {
 		public void accept(Ship ship){
 			this.berthingShip = ship;
 			ship.setShipStatus(ShipStatus.BERTH);
+			if (ship.isDualfuelFlag() && ship.getSchedule().isBunkering) {
+				ship.getFuelTank().setTmpType(this.fuelType);
+			}
 			this.occupiedFlag = 1;
+			if (this.fuelType == this.berthingShip.getFuelType()) {
+				this.fuelPrice = Market.getPrice(this.fuelType);
+				this.berthingShip.setFuelPrice(fuelPrice);
+			}
 		}
 
 		public void berthing(){
 			if(berthingShip.getSchedule().isLoading)loading();
 			if(berthingShip.getSchedule().isUnLoading) unloading();
 			if(berthingShip.getSchedule().isBunkering) bunkering();
-			if(time > 500){
+			if(time > 8760){
 				berthingShip.owner.addCashFlow(-1*this.berthingFee);
 				getOperator().addBerthingCash(this.berthingFee);
 			}
@@ -90,10 +96,12 @@ public class SimplePort extends Port {
 		}
 
 		public void unloading(){
-			if(this.berthingShip.getAmountOfCargo() < loadingCapacity){
-				this.berthingShip.totalCargo += this.berthingShip.getAmountOfCargo();
-			}else{
-				this.berthingShip.totalCargo += loadingCapacity;
+			if(berthingShip.time > 8760) {
+				if(this.berthingShip.getAmountOfCargo() < loadingCapacity){
+					this.berthingShip.totalCargo += this.berthingShip.getAmountOfCargo();
+				}else{
+					this.berthingShip.totalCargo += loadingCapacity;
+				}
 			}
 			this.berthingShip.setAmountOfCargo(this.berthingShip.getAmountOfCargo() - loadingCapacity);
 			this.berthingShip.getSchedule().setUnloadingAmount(berthingShip.getSchedule().getUnloadingAmount()-loadingCapacity);
@@ -102,7 +110,20 @@ public class SimplePort extends Port {
 
 		public boolean match(Ship ship){
 			if (super.occupiedFlag == 1) return false;
-			if (super.fuelType != ship.getFuelType()) return false;
+			if (ship.getSchedule().isBunkering == false) return true;
+			FuelType shipFuelType = null;
+			if (ship.isDualfuelFlag() == false) {
+				shipFuelType = ship.getFuelType();
+			}else {
+				double hfoPrice = Market.getPrice(FuelType.HFO);
+				double lngPrice = Market.getPrice(FuelType.LNG);
+				if (hfoPrice < lngPrice) {
+					shipFuelType = FuelType.HFO;
+				}else {
+					shipFuelType = FuelType.LNG;
+				}
+			}
+			if (super.fuelType != shipFuelType) return false;
 			if (super.loadingType != ship.getCargoType()) return false;
 			return true;
 		}
@@ -117,13 +138,10 @@ public class SimplePort extends Port {
 				bunkeringAmount = bunkeringCapacity;
 			}
 			double fuelPrice = 0;
-			for (FuelPrice fuel : Market.fuels){
-				if (this.berthingShip.getFuelType() == fuel.getFuelType()){
-					fuelPrice = fuel.getPrice();
-				}
+			if(this.berthingShip.time > 8760) {
+				getOperator().addBunkeringCash(fuelPrice * bunkeringAmount / 1.2 * 0.2);
+				this.berthingShip.addCashFlow(-1 * fuelPrice * bunkeringAmount);
 			}
-			getOperator().addBunkeringCash(fuelPrice * bunkeringAmount / 1.2 * 0.2);
-			this.berthingShip.addCashFlow(-1 * fuelPrice * bunkeringAmount);
 			if (berthingShip.getAmountOfFuel() == berthingShip.getFuelTank().getCapacity()){
 				this.berthingShip.getSchedule().setBunkering(false);
 			}

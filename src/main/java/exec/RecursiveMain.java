@@ -25,7 +25,7 @@ public class RecursiveMain {
 	private static String OUTPUT_DIR_ROOT = "./data/";
 	
 	public static void main(String[] args){
-		System.out.println(args[0]);
+		System.out.println("Simulation end time: "+ args[0]);
 		int endTime = Integer.parseInt(args[0]);
 		String input = "case_table.csv";
 		List<String> outputListAll = new ArrayList<String>();
@@ -96,6 +96,10 @@ public class RecursiveMain {
 	}
 	
 	private static void makeFleetConfig(String caseNum, String hfo, String lsfo, String lng){
+		
+		boolean dualfuelFlag = true;
+		
+		
 		String fileName = "fleet_config.csv";
 		String outputFileName = INPUT_DIR + DIR_PREFIX + caseNum +"/" + fileName;
 		List<String[]> outputData = new ArrayList<String[]>();
@@ -105,9 +109,16 @@ public class RecursiveMain {
 		String[] row1 = {"shipName"};
 		String[] row2 = {"Ship_1"};
 		String[] row3 = {"speed","cargoType","cargoAmount", "foc", "fuelCapacity","fuelType","initialType","OperatingCost"};
-		String[] row4HFO = {"28","OIL","240000","0.36","5000","HFO","Japan","15000"};
-		String[] row4LSFO = {"28","OIL","300000","0.32","5000","LSFO","Japan","15000"};
-		String[] row4LNG = {"28","OIL","300000","0.29","5000","LNG","Japan","15000"};
+		String[] row4HFO = {"28","OIL","240000","0.36","5000","HFO","Japan","15000","yes"};
+		String[] row4LSFO = {"28","OIL","300000","0.32","5000","LSFO","Japan","15000","No"};
+		String[] row4LNG = null;
+		if(dualfuelFlag) {
+			String[] row4 = {"28","OIL","300000","0.29","5000","HFOLNG","Japan","15000","No"};
+			row4LNG = row4;
+		}else {
+			String[] row4 = {"28","OIL","300000","0.29","5000","LNG","Japan","15000","No"};
+			row4LNG = row4;
+		}
 		templateHFO.add(row1);
 		templateHFO.add(row2);
 		templateHFO.add(row3);
@@ -149,27 +160,27 @@ public class RecursiveMain {
 		String fileName = "fuelprice_config.csv";
 		
 		List<String[]> data = CSVReader.forGeneral(fuelpriceFile);
-		
-		switch(trend){
-		case "High":
-			data.get(3)[0] = String.valueOf(870);
-			data.get(3)[1] = String.valueOf(1.0);
-			data.get(3)[2] = String.valueOf(1.0);
-			data.get(3)[3] = String.valueOf(0.505);
-			break;
-		case "Normal":
-			data.get(3)[0] = String.valueOf(720);
-			data.get(3)[1] = String.valueOf(1.0);
-			data.get(3)[2] = String.valueOf(1.0);
-			data.get(3)[3] = String.valueOf(0.505);
-			break;
-		case "Low":
-			data.get(3)[0] = String.valueOf(570);
-			data.get(3)[1] = String.valueOf(1.0);
-			data.get(3)[2] = String.valueOf(1.0);
-			data.get(3)[3] = String.valueOf(0.505);
-			break;
-		}
+//		
+//		switch(trend){
+//		case "High":
+//			data.get(3)[0] = String.valueOf(870);
+//			data.get(3)[1] = String.valueOf(1.0);
+//			data.get(3)[2] = String.valueOf(1.0);
+//			data.get(3)[3] = String.valueOf(0.505);
+//			break;
+//		case "Normal":
+//			data.get(3)[0] = String.valueOf(720);
+//			data.get(3)[1] = String.valueOf(1.0);
+//			data.get(3)[2] = String.valueOf(1.0);
+//			data.get(3)[3] = String.valueOf(0.505);
+//			break;
+//		case "Low":
+//			data.get(3)[0] = String.valueOf(570);
+//			data.get(3)[1] = String.valueOf(1.0);
+//			data.get(3)[2] = String.valueOf(1.0);
+//			data.get(3)[3] = String.valueOf(0.505);
+//			break;
+//		}
 		CSVwriter.writeAll(INPUT_DIR + DIR_PREFIX + caseNum +"/" +fileName, data, false);
 		
 	}

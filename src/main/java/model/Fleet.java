@@ -29,5 +29,10 @@ public class Fleet {
 	public static void reset(){
 		ships = new ArrayList<Ship>();
 	}
+	public static void setDetour(boolean flag) {
+		for(Ship ship : ships) {
+			ship.setDetourFlag(flag);
+		}
+	}
 
 }
