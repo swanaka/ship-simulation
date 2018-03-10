@@ -12,6 +12,7 @@ import model.PortNetwork;
 import simulation.Simulation;
 import simulation.Simulation4Lorena;
 import util.CAPEXCalculator;
+import util.CAPEXCalculator4Workshop;
 import util.CSVReader;
 import util.CSVwriter;
 
@@ -51,15 +52,14 @@ public class Exec4ComputerAidedWorkshop {
 			String numOfHFO = elem[1];
 			String numOfLSFO = elem[2];
 			String numOfLNG = elem[3];
-			String numOFHFOLNG = elem[4];
+			String numOfHFOLNG = elem[4];
 			String[] persianGulfSetting = {elem[5], elem[6]};
 			String[] japanSetting = {elem[7], elem[8]};
 			String[] singaporeSetting = {elem[9], elem[10]};
-			//CAPEXCalculator calculator = new CAPEXCalculator(typeOfFuel, typeOfEngine, scrubber, location, LNGbunkeringMethod);
-			CAPEXCalculator calculator = null;
+			CAPEXCalculator calculator = new CAPEXCalculator4Workshop(numOfHFO,numOfLSFO, numOfLNG, numOfHFOLNG,elem[5], elem[6],elem[7],elem[8],elem[9],elem[10]);
 			if(!caseNum.equals("CASE")){
 				makeDir(caseNum);
-				makeInputFile(caseNum, numOfHFO, numOfLSFO, numOfLNG, numOFHFOLNG, persianGulfSetting, japanSetting, singaporeSetting);
+				makeInputFile(caseNum, numOfHFO, numOfLSFO, numOfLNG, numOfHFOLNG, persianGulfSetting, japanSetting, singaporeSetting);
 //				if(location.equals("Singapore")) {
 //					detourFlag = true;
 //				}else {

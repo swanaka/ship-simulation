@@ -13,6 +13,7 @@ import simulation.SimpleSimulation;
 import simulation.Simulation;
 import simulation.Simulation4Lorena;
 import util.CAPEXCalculator;
+import util.CAPEXCalculator4CESUN;
 import util.CSVReader;
 import util.CSVwriter;
 
@@ -51,7 +52,7 @@ public class Exec4LorenaExperiments {
 			String scrubber = elem[3];
 			String location = elem[4];
 			String LNGbunkeringMethod = elem[5];
-			CAPEXCalculator calculator = new CAPEXCalculator(typeOfFuel, typeOfEngine, scrubber, location, LNGbunkeringMethod);
+			CAPEXCalculator calculator = new CAPEXCalculator4CESUN(typeOfFuel, typeOfEngine, scrubber, location, LNGbunkeringMethod);
 			if(!caseNum.equals("CASE")){
 				makeDir(caseNum);
 				makeInputFile(caseNum, typeOfFuel, typeOfEngine, scrubber, location, LNGbunkeringMethod);
