@@ -188,7 +188,7 @@ public class Simulation4Lorena extends Simulation{
 		outputList.add("Total NOx Emission rate");
 		outputList.add("Total SOx Emission rate");
 		outputList.add("Total Waiting Time rate");
-		outputList.add("InitialCost");
+		//outputList.add("InitialCost");
 		CSVwriter.write(OUTPUT_DIR + OUTPUT_ALL_RESULT, outputList, true);
  		outputList = new ArrayList<String>();
 		
@@ -200,7 +200,7 @@ public class Simulation4Lorena extends Simulation{
 		outputList.add(String.valueOf(totalNox/TTTM));
 		outputList.add(String.valueOf(totalSox/TTTM));
 		outputList.add((String.valueOf(totalWaitingTime/(this.getEndTime()-8760)/20*100)));
-		outputList.add(String.valueOf(this.calcultaor.calculate()));
+		//outputList.add(String.valueOf(this.calcultaor.calculate()));
 		outputListAll.addAll(outputList);
  		CSVwriter.write(OUTPUT_DIR + OUTPUT_ALL_RESULT, outputList, true);
  		CSVwriter.write(OUTPUT_DIR_ROOT + OUTPUT_OVERALL_RESULT, outputListAll, true);

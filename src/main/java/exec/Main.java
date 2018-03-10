@@ -94,21 +94,41 @@ public class Main {
 			if (data.get(i)[0].equals( "PortName")){
 				String name = data.get(i+1)[0];
 				Port port = new SimplePort(name);
-				int kindsOfFacility = Integer.parseInt(data.get(i+1)[1]);
-				for(int j = 0; j < kindsOfFacility; j++){
-					String fuelType = data.get(i+3+3*j)[0];
-					String loadingType = data.get(i+3+3*j)[1];
-					String bunkeringCapacity = data.get(i+3+3*j)[2];
-					String loadingCapacity = data.get(i+3+3*j)[3];
-					String berthingFee = data.get(i+3+3*j)[4];
-					int numOfPortFacilities = Integer.parseInt(data.get(i+4+3*j)[0]);
-					HashMap<String, String> param = new HashMap<String, String>();
-					param.put("FuelType", fuelType);
-					param.put("LoadingType", loadingType);
-					param.put("BunkeringCapacity", bunkeringCapacity);
-					param.put("LoadingCapacity", loadingCapacity);
-					param.put("BerthingFee", berthingFee);
-					port.addPortFacilities(param,numOfPortFacilities);
+				boolean bunkeringFlag = true;
+				int numOfFacility = Integer.parseInt(data.get(i+1)[1]);
+				int numOfHFOfacility = Integer.parseInt(data.get(i+4)[0]);
+				int numOfLNGfacility = Integer.parseInt(data.get(i+7)[0]);
+				if(numOfLNGfacility > 0) {
+					if(data.get(i+6)[5].equals("TRUE")) {
+						bunkeringFlag = false;
+						port.setNumOfBunkers(numOfLNGfacility);
+						numOfLNGfacility = numOfHFOfacility;
+					}
+				}
+				int numOfLSFOfacility = Integer.parseInt(data.get(i+10)[0]);
+				
+				for(int j = 0; j < numOfFacility; j++){
+					List<FuelType> fuelTypeList = new ArrayList<FuelType>();
+					List<Double> bunkeringCapacityList = new ArrayList<Double>();
+					if(numOfHFOfacility > 0) {
+						fuelTypeList.add(FuelType.HFO);
+						bunkeringCapacityList.add(Double.parseDouble(data.get(i+3)[2]));
+						numOfHFOfacility -= 1;
+					}
+					if(numOfLNGfacility > 0) {
+						fuelTypeList.add(FuelType.LNG);
+						bunkeringCapacityList.add(Double.parseDouble(data.get(i+6)[2]));
+						numOfLNGfacility -= 1;
+					}
+					if(numOfLSFOfacility > 0) {
+						fuelTypeList.add(FuelType.LSFO);
+						bunkeringCapacityList.add(Double.parseDouble(data.get(i+9)[2]));
+						numOfLSFOfacility -= 1;
+					}
+					CargoType loadingType = CargoType.valueOf(data.get(i+3)[1]);
+					double loadingCapacity = Double.parseDouble(data.get(i+3+3*j)[3]);
+					double berthingFee = Double.parseDouble(data.get(i+3+3*j)[4]);
+					port.addPortFacility(fuelTypeList, loadingType, bunkeringCapacityList, loadingCapacity, berthingFee, bunkeringFlag);
 				}
 				portCount ++;
 				ports.add(port);

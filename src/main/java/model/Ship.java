@@ -2,7 +2,7 @@ package model;
 
 import java.util.List;
 
-import model.Port.PortFacility;
+import model.PortFacility;
 import model.Status.CargoType;
 import model.Status.FuelType;
 import model.Status.ShipStatus;

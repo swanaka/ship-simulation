@@ -52,14 +52,8 @@ public class Exec4ComputerAidedWorkshop {
 			String numOfLSFO = elem[2];
 			String numOfLNG = elem[3];
 			String numOFHFOLNG = elem[4];
-			String numOfLNGBunkeringAtPersianGulf = elem[5];
-			String LNGbunkeringMethodAtPersianGulf = elem[6];
 			String[] persianGulfSetting = {elem[5], elem[6]};
-			String numOfLNGBunkeringAtJapan = elem[7];
-			String LNGbunkeringMethodAtJapan = elem[8];
 			String[] japanSetting = {elem[7], elem[8]};
-			String numOfLNGBunkeringAtSingapore = elem[9];
-			String LNGbunkeringMethodAtSingapore = elem[10];
 			String[] singaporeSetting = {elem[9], elem[10]};
 			//CAPEXCalculator calculator = new CAPEXCalculator(typeOfFuel, typeOfEngine, scrubber, location, LNGbunkeringMethod);
 			CAPEXCalculator calculator = null;
@@ -195,13 +189,25 @@ public class Exec4ComputerAidedWorkshop {
 		data.get(28)[2] = "104";
 
 		if(japanSetting[1].equals("Truck to Ship")) {
+			data.get(6)[5] = "TRUE";
 			data.get(6)[2] = "10.4";
 		}
+		if(japanSetting[1].equals("Ship to Ship")) {
+			data.get(6)[5] = "TRUE";
+		}
 		if(persianGulfSetting[1].equals("Truck to Ship")) {
+			data.get(17)[5] = "TRUE";
 			data.get(17)[2] = "10.4";
 		}
+		if(persianGulfSetting[1].equals("Ship to Ship")) {
+			data.get(17)[5] = "TRUE";
+		}
 		if(singaporeSetting[1].equals("Truck to Ship")) {
+			data.get(28)[5] = "TRUE";
 			data.get(28)[2] = "10.4";
+		}
+		if(singaporeSetting[1].equals("Ship to Ship")) {
+			data.get(28)[5] = "TRUE";
 		}
 		
 		CSVwriter.writeAll(INPUT_DIR + DIR_PREFIX + caseNum +"/"+ fileName, data, false);

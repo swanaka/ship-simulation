@@ -20,6 +20,7 @@ public abstract class Port {
 	protected List<PortFacility> facilities;
 	private Location loc;
 	protected PortOperator operator;
+	protected int numOfBunkers;
 
 	//Status
 	//	List of ships whose destination or location is this ports.
@@ -30,15 +31,14 @@ public abstract class Port {
 	public abstract PortFacility checkBerthing(Ship ship);
 	public abstract void departure(Ship ship);
 
-	public abstract void addPortFacility(HashMap<String, String> param);
-	public abstract void addPortFacilities(HashMap<String, String> param, int num);
-	public abstract void addPortFacilities(HashMap<String, String>[] params);
+	public abstract void addPortFacility(List<FuelType> fuelTypeList, CargoType loadingType, List<Double> bunkeringCapacity, double loadingCapacity, double berthingFee, boolean bunkeringFlag);
 	public abstract int getTimeForReady(Ship ship);
 	
 	public Port(String name){
 		this.name = name;
 		//waitingShips = new ArrayList<Ship>();
 		facilities = new ArrayList<PortFacility>();
+		numOfBunkers = -1;
 	}
 	
 	public void timeNext(){
@@ -73,23 +73,8 @@ public abstract class Port {
 	public void setLoc(Location loc) {
 		this.loc = loc;
 	}
-
-	protected abstract class PortFacility{
-		protected Ship berthingShip;
-		protected FuelType fuelType;
-		protected CargoType loadingType;
-		protected int occupiedFlag;
-		protected double bunkeringCapacity;
-		protected double loadingCapacity;
-		
-
-		public abstract void accept(Ship ship);
-		public abstract void berthing();
-		public abstract void loading();
-		public abstract void unloading();
-		public abstract void bunkering();
-		public abstract boolean match(Ship ship);
-
+	public void setNumOfBunkers(int num) {
+		this.numOfBunkers = num;
 	}
 
 }
