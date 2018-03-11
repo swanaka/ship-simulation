@@ -3,6 +3,8 @@ package model;
 import java.util.ArrayList;
 import java.util.List;
 
+import model.Status.FuelType;
+
 public class PortNetwork {
 	
 	private static List<Port> portList;
@@ -54,5 +56,18 @@ public class PortNetwork {
 	public static void setPortSettings(List<Port> pList,double[][] route){
 		portList = pList;
 		routeMatrix = route;
+	}
+	
+	public static boolean avilablePort(String portname, FuelType type) {
+		for(Port port : portList) {
+			if(port.getName().equals(portname)) {
+				for(PortFacility facility : port.facilities) {
+					if(facility.fuelTypeList.contains(type)) {
+						return true;
+					}
+				}
+			}	
+		}
+		return false;
 	}
 }

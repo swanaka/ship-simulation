@@ -60,11 +60,11 @@ public class Exec4ComputerAidedWorkshop {
 			if(!caseNum.equals("CASE")){
 				makeDir(caseNum);
 				makeInputFile(caseNum, numOfHFO, numOfLSFO, numOfLNG, numOfHFOLNG, persianGulfSetting, japanSetting, singaporeSetting);
-//				if(location.equals("Singapore")) {
-//					detourFlag = true;
-//				}else {
-//					detourFlag = false;
-//				}
+				if(Integer.parseInt(elem[5]) > 0) {
+					detourFlag = true;
+				}else {
+					detourFlag = false;
+				}
 				execOneShot(INPUT_DIR + DIR_PREFIX+caseNum, endTime, calculator);
 			}
 		}

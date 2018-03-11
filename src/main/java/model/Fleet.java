@@ -3,6 +3,8 @@ package model;
 import java.util.ArrayList;
 import java.util.List;
 
+import model.Status.FuelType;
+
 public class Fleet {
 	
 	private static List<Ship> ships;
@@ -31,7 +33,9 @@ public class Fleet {
 	}
 	public static void setDetour(boolean flag) {
 		for(Ship ship : ships) {
-			ship.setDetourFlag(flag);
+			if(ship.getFuelType() == FuelType.LNG || ship.getFuelType() == FuelType.HFOLNG) {
+				ship.setDetourFlag(flag);
+			}
 		}
 	}
 

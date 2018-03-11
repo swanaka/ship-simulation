@@ -75,6 +75,11 @@ public abstract class Ship {
 				if (remainingDistance > 0) transport();
 				if (remainingDistance == 0) {
 					Port port = this.schedule.get(0).getDestination();
+					if(PortNetwork.avilablePort(port.name, this.getFuelType())) {
+						this.getSchedule().setBunkering(true);
+					}else {
+						this.getSchedule().setBunkering(false);
+					}
 					PortFacility facility = port.checkBerthing(this);
 					if(facility == null) {
 						setShipStatus(ShipStatus.WAIT);
@@ -95,6 +100,11 @@ public abstract class Ship {
 				break;
 			case WAIT:
 				Port port = this.schedule.get(0).getDestination();
+				if(PortNetwork.avilablePort(port.name, this.getFuelType())) {
+					this.getSchedule().setBunkering(true);
+				}else {
+					this.getSchedule().setBunkering(false);
+				}
 				PortFacility facility = port.checkBerthing(this);
 				if(facility == null){
 					setShipStatus(ShipStatus.WAIT);
