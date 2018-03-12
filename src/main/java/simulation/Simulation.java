@@ -25,7 +25,7 @@ public abstract class Simulation {
 		save(-1);
 		while(now <= endTime){
 			timeNext();
-			save(now);
+			if(this.saveFlag) save(now);
 			now++;
 		}
 		save();
