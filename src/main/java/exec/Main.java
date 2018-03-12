@@ -103,6 +103,8 @@ public class Main {
 						bunkeringFlag = false;
 						port.setNumOfBunkers(numOfLNGfacility);
 						numOfLNGfacility = numOfHFOfacility;
+					}else {
+						port.setNumOfBunkers(-1);
 					}
 				}
 				int numOfLSFOfacility = Integer.parseInt(data.get(i+10)[0]);

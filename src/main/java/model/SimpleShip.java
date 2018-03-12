@@ -143,7 +143,15 @@ public class SimpleShip extends Ship {
 		}
 
 		public double calcFOC(double v){
-			return foc;
+			if(dualfuelFlag) {
+				if(getFuelType() == FuelType.LNG) {
+					return foc;
+				}else {
+					return 0.124;
+				}
+			}else {
+				return foc;
+			}
 		}
 
 
@@ -201,7 +209,7 @@ public class SimpleShip extends Ship {
 			if(previousPort.equals(departure)) {
 				this.getLastSchedule().setLoading(true);
 				this.getLastSchedule().setLoadingType(this.getCargoType());
-				this.getLastSchedule().setLoadingAmount(amount);;
+				this.getLastSchedule().setLoadingAmount(amount);
 				this.getLastSchedule().setBunkering(true);
 				
 				Schedule schedule = new SimpleSchedule(startTime,endTime,departure,this.bunkeringPort);
@@ -222,7 +230,7 @@ public class SimpleShip extends Ship {
 				
 				
 			}else {
-				this.getLastSchedule().setBunkering(false);
+				this.getLastSchedule().setBunkering(true);
 				
 				Schedule schedule = new SimpleSchedule(startTime, endTime, previousPort, this.bunkeringPort);
 				schedule.setBunkering(true);

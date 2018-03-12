@@ -32,10 +32,12 @@ public class SimplePortFacitliy extends PortFacility{
 		this.berthingShip = ship;
 		ship.setShipStatus(ShipStatus.BERTH);
 		this.occupiedFlag = 1;
-		this.tmpFuelType = ship.getFuelType();
-		this.fuelPrice = Market.getPrice(this.tmpFuelType);
-		this.berthingShip.setFuelPrice(fuelPrice);
-		this.tmpBunkeringCapacity = super.bunkeringCapacityList.get(fuelTypeList.indexOf(tmpFuelType));
+		if (ship.getSchedule().isBunkering) {
+			this.tmpFuelType = ship.getFuelType();
+			this.fuelPrice = Market.getPrice(this.tmpFuelType);
+			this.berthingShip.setFuelPrice(fuelPrice);
+			this.tmpBunkeringCapacity = super.bunkeringCapacityList.get(fuelTypeList.indexOf(tmpFuelType));
+		}
 	}
 
 	public void berthing(){
@@ -71,19 +73,7 @@ public class SimplePortFacitliy extends PortFacility{
 	public boolean match(Ship ship){
 		if (super.occupiedFlag == 1) return false;
 		if (ship.getSchedule().isBunkering == false) return true;
-		FuelType shipFuelType = null;
-		if (ship.isDualfuelFlag() == false) {
-			shipFuelType = ship.getFuelType();
-		}else {
-			double hfoPrice = Market.getPrice(FuelType.HFO);
-			double lngPrice = Market.getPrice(FuelType.LNG);
-			if (hfoPrice < lngPrice) {
-				shipFuelType = FuelType.HFO;
-			}else {
-				shipFuelType = FuelType.LNG;
-			}
-			ship.getFuelTank().setTmpType(shipFuelType);
-		}
+		FuelType shipFuelType = ship.getFuelType();
 		if (!super.fuelTypeList.contains(shipFuelType)) return false;
 		if (super.loadingType != ship.getCargoType()) return false;
 		return true;

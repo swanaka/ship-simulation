@@ -48,21 +48,27 @@ public class CAPEXCalculator4Workshop extends CAPEXCalculator{
 		}else if(this.bunkeringMethodAtPersianGulf.equals("Ship to Ship")) {
 			capex += cost4BunkeringShip * numOfLNGbunkeringAtPersianGulf;
 		}else if(this.bunkeringMethodAtPersianGulf.equals("Shore to Ship")) {
-			capex += cost4LNGterminal;
+			if(numOfLNGbunkeringAtPersianGulf > 0) {
+				capex += cost4LNGterminal;
+			}
 		}
 		if(this.bunkeringMethodAtJapan.equals("Truck to Ship")) {
 			capex += cost4LNGtruck * numOfLNGbunkeringAtJapan;
 		}else if(this.bunkeringMethodAtJapan.equals("Ship to Ship")) {
 			capex += cost4BunkeringShip * numOfLNGbunkeringAtJapan;
 		}else if(this.bunkeringMethodAtJapan.equals("Shore to Ship")) {
-			capex += cost4LNGterminal;
+			if(numOfLNGbunkeringAtJapan > 0) {
+				capex += cost4LNGterminal;
+			}
 		}
 		if(this.bunkeringMethodAtSingapore.equals("Truck to Ship")) {
 			capex += cost4LNGtruck * numOfLNGbunkeringAtSingapore;
 		}else if(this.bunkeringMethodAtSingapore.equals("Ship to Ship")) {
 			capex += cost4BunkeringShip * numOfLNGbunkeringAtSingapore;
 		}else if(this.bunkeringMethodAtSingapore.equals("Shore to Ship")) {
-			capex += cost4LNGterminal;
+			if(numOfLNGbunkeringAtSingapore > 0) {
+				capex += cost4LNGterminal;
+			}
 		}
 		
 		return capex;

@@ -34,8 +34,13 @@ public class Exec4ComputerAidedWorkshop {
 	private static final int numOfPortfacilities = 5;
 	
 	public static void main(String[] args){
-		System.out.println("Simulation end time: "+ args[0]);
-		int endTime = Integer.parseInt(args[0]);
+		int endTime = 0;
+		if(args.length == 0) {
+			endTime = 8760 * 100;
+		}else {
+			System.out.println("Simulation end time: "+ args[0]);
+			endTime = Integer.parseInt(args[0]);
+		}
 		List<String> outputListAll = new ArrayList<String>();
 		outputListAll.add("System's ilities");
 		outputListAll.add("Fuel efficiency");
@@ -47,7 +52,13 @@ public class Exec4ComputerAidedWorkshop {
 		CSVwriter.write(OUTPUT_DIR_ROOT + OUTPUT_OVERALL_RESULT, outputListAll, false);
 
 		List<String[]> data = CSVReader.forGeneral(INPUT_DIR + casefile);
+		int count = 0;
 		for(String[] elem : data){
+			if(count == 0) {
+				count ++;
+				continue;
+			}
+			
 			String caseNum = elem[0];
 			String numOfHFO = elem[1];
 			String numOfLSFO = elem[2];
@@ -60,7 +71,7 @@ public class Exec4ComputerAidedWorkshop {
 			if(!caseNum.equals("CASE")){
 				makeDir(caseNum);
 				makeInputFile(caseNum, numOfHFO, numOfLSFO, numOfLNG, numOfHFOLNG, persianGulfSetting, japanSetting, singaporeSetting);
-				if(Integer.parseInt(elem[5]) > 0) {
+				if(Integer.parseInt(elem[9]) > 0) {
 					detourFlag = true;
 				}else {
 					detourFlag = false;
@@ -127,11 +138,11 @@ public class Exec4ComputerAidedWorkshop {
 		String[] row1 = {"shipName"};
 		String[] row2 = {"Ship_1"};
 		String[] row3 = {"speed","cargoType","cargoAmount", "foc", "fuelCapacity","fuelType","initialType","OperatingCost","Scrubber"};
-		String[] row4HFO = {"28","OIL","300000","0.36","5000","HFO","Japan","15000","Yes","No"};
+		String[] row4HFO = {"28","OIL","300000","0.124","5000","HFO","Japan","15000","Yes","No"};
 		
-		String[] row4LSFO = {"28","OIL","300000","0.32","5000","LSFO","Japan","15000","No", "No"};
-		String[] row4LNG = {"28","OIL","300000","0.29","5000","LNG","Japan","15000","No","No"};
-		String[] row4HFOLNG = {"28","OIL","300000","0.29","5000","HFOLNG","Japan","15000","Yes","No"};
+		String[] row4LSFO = {"28","OIL","300000","0.11","5000","LSFO","Japan","15000","No", "No"};
+		String[] row4LNG = {"28","OIL","300000","0.10","5000","LNG","Japan","15000","No","No"};
+		String[] row4HFOLNG = {"28","OIL","300000","0.10","5000","HFOLNG","Japan","15000","Yes","No"};
 		
 		templateHFO.add(row1);
 		templateHFO.add(row2);

@@ -75,6 +75,26 @@ public abstract class Ship {
 				if (remainingDistance > 0) transport();
 				if (remainingDistance == 0) {
 					Port port = this.schedule.get(0).getDestination();
+					if(this.dualfuelFlag) {
+						FuelType shipFuelType = null;
+						double hfoPrice = Market.getPrice(FuelType.HFO);
+						double lngPrice = Market.getPrice(FuelType.LNG);
+						if (hfoPrice < lngPrice) {
+							shipFuelType = FuelType.HFO;
+						}else {
+							shipFuelType = FuelType.LNG;
+						}
+						if(shipFuelType == FuelType.LNG) {
+							this.getFuelTank().setTmpType(shipFuelType);
+							double nextDistance = PortNetwork.getDistance(port, this.schedule.get(1).getDestination());
+							if(0.29 * nextDistance > this.getFuelTank().amount) {
+								if(!PortNetwork.avilablePort(port.name, FuelType.LNG)) {
+									shipFuelType = FuelType.HFO;
+								}
+							}
+						}
+						this.getFuelTank().setTmpType(shipFuelType);
+					}
 					if(PortNetwork.avilablePort(port.name, this.getFuelType())) {
 						this.getSchedule().setBunkering(true);
 					}else {
