@@ -10,7 +10,8 @@
 // Apply the java plugin to add support for Java
 apply plugin: 'java'
 apply plugin: 'eclipse'
-
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
 // In this section you declare where to find the dependencies of your project
 repositories {
     // Use 'jcenter' for resolving your dependencies.
@@ -35,4 +36,7 @@ dependencies {
     compile(group: 'org.apache.poi', name : 'poi-ooxml', version: '3.15') {
 		exclude group: 'stax', module: 'stax-api'
 	}
+}
+task wrapper(type: Wrapper) {
+    gradleVersion = '4.6'
 }
