@@ -35,11 +35,16 @@ public class Exec4ComputerAidedWorkshop {
 	
 	public static void main(String[] args){
 		int endTime = 0;
+		boolean saveFlag = false;
 		if(args.length == 0) {
 			endTime = 8760 * 100;
-		}else {
+		}else if(args.length == 1){
 			System.out.println("Simulation end time: "+ args[0]);
 			endTime = Integer.parseInt(args[0]);
+		}else if(args.length == 2) {
+			System.out.println("Simulation end time: "+ args[0]);
+			endTime = Integer.parseInt(args[0]);
+			saveFlag = true;
 		}
 		List<String> outputListAll = new ArrayList<String>();
 		outputListAll.add("System's ilities");
@@ -76,13 +81,13 @@ public class Exec4ComputerAidedWorkshop {
 				}else {
 					detourFlag = false;
 				}
-				execOneShot(INPUT_DIR + DIR_PREFIX+caseNum, endTime, calculator);
+				execOneShot(INPUT_DIR + DIR_PREFIX+caseNum, endTime, calculator, saveFlag);
 			}
 		}
 		
 		System.out.println("-------------All of the Simulation End ----------");
 	}
-	private static void execOneShot(String inputDirPath, int endTime, CAPEXCalculator calculator){
+	private static void execOneShot(String inputDirPath, int endTime, CAPEXCalculator calculator, boolean saveFlag){
 		Fleet.reset();
 		PortNetwork.reset();
 		Market.reset();
@@ -96,6 +101,7 @@ public class Exec4ComputerAidedWorkshop {
 			Fleet.setDetour(false);
 		}
 		Simulation simulation = new Simulation4Lorena(endTime,outputDir, calculator);
+		simulation.setSaveFlag(saveFlag);
 		System.out.println("Simulation Start");
 		simulation.execute();
 		System.out.println("Simulation End");

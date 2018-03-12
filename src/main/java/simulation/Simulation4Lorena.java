@@ -21,6 +21,7 @@ public class Simulation4Lorena extends Simulation{
 	private final String OUTPUT_ALL_RESULT = "result_all.csv";
 	private final String OUTPUT_OVERALL_RESULT = "result_overall.csv";
 	private CAPEXCalculator calcultaor;
+	private boolean saveFlag;
 
 	public Simulation4Lorena(int endTime, String outputDir, CAPEXCalculator calculator) {
 		super(endTime);

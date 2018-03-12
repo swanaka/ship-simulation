@@ -8,6 +8,7 @@ public abstract class Simulation {
 	//Configuration
 	private int startTime;
 	private int endTime;
+	private boolean saveFlag;
 	//Status
 	protected int now = 0;
 	
@@ -24,7 +25,7 @@ public abstract class Simulation {
 		save(-1);
 		while(now <= endTime){
 			timeNext();
-			//save(now);
+			save(now);
 			now++;
 		}
 		save();
@@ -57,5 +58,7 @@ public abstract class Simulation {
 		this.endTime = endTime;
 	}
 	
-
+	public void setSaveFlag(boolean flag) {
+		this.saveFlag = flag;
+	}
 }
