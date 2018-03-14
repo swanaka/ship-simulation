@@ -207,24 +207,27 @@ public class Exec4ComputerAidedWorkshop {
 
 		if(japanSetting[1].equals("Truck to Ship")) {
 			data.get(6)[5] = "TRUE";
-			data.get(6)[2] = "10.4";
+			data.get(6)[2] = "21";
 		}
 		if(japanSetting[1].equals("Ship to Ship")) {
 			data.get(6)[5] = "TRUE";
+			data.get(6)[2] = "94";
 		}
 		if(persianGulfSetting[1].equals("Truck to Ship")) {
 			data.get(17)[5] = "TRUE";
-			data.get(17)[2] = "10.4";
+			data.get(17)[2] = "21";
 		}
 		if(persianGulfSetting[1].equals("Ship to Ship")) {
 			data.get(17)[5] = "TRUE";
+			data.get(17)[2] = "94";
 		}
 		if(singaporeSetting[1].equals("Truck to Ship")) {
 			data.get(28)[5] = "TRUE";
-			data.get(28)[2] = "10.4";
+			data.get(28)[2] = "94";
 		}
 		if(singaporeSetting[1].equals("Ship to Ship")) {
 			data.get(28)[5] = "TRUE";
+			data.get(17)[2] = "94";
 		}
 		
 		CSVwriter.writeAll(INPUT_DIR + DIR_PREFIX + caseNum +"/"+ fileName, data, false);
