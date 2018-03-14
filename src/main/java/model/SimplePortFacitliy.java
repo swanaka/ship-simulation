@@ -34,7 +34,7 @@ public class SimplePortFacitliy extends PortFacility{
 		this.occupiedFlag = 1;
 		if (ship.getSchedule().isBunkering) {
 			this.tmpFuelType = ship.getFuelType();
-			this.fuelPrice = Market.getPrice(this.tmpFuelType);
+			this.fuelPrice = Market.getPrice(this.tmpFuelType, this.port);
 			this.berthingShip.setFuelPrice(fuelPrice);
 			this.tmpBunkeringCapacity = super.bunkeringCapacityList.get(fuelTypeList.indexOf(tmpFuelType));
 		}

@@ -9,6 +9,7 @@ public abstract class FuelPrice {
 	
 	public abstract void timeNext();
 	public abstract double getPastPrice(int past);
+	public abstract double getPrice(Port port);
 	
 	public FuelType getFuelType() {
 		return fuelType;
@@ -16,11 +17,11 @@ public abstract class FuelPrice {
 	public void setFuelType(FuelType fuelType) {
 		this.fuelType = fuelType;
 	}
-	public double getPrice() {
-		return price;
-	}
 	public void setPrice(double price) {
 		this.price = price;
+	}
+	public double getPrice() {
+		return this.price;
 	}
 	
 }

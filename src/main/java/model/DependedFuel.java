@@ -24,10 +24,10 @@ public class DependedFuel extends FuelPrice {
 		return 0;
 	}
 	@Override
-	public double getPrice() {
+	public double getPrice(Port port) {
 		for (FuelPrice fuel : Market.getFuels()){
 			if(dependedFuel.equals(fuel.getFuelType().toString())){
-				return fuel.getPrice()* coeff;
+				return fuel.getPrice(port)* coeff;
 			}
 		}
 		return 0;

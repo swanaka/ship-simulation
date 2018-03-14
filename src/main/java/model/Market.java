@@ -52,10 +52,10 @@ public class Market {
 
 	}
 
-	public static double getPrice(FuelType type){
+	public static double getPrice(FuelType type, Port port){
 		for(FuelPrice fuel : fuels){
 			if(type == fuel.getFuelType()){
-				return fuel.getPrice();
+				return fuel.getPrice(port);
 			}
 		}
 		return 0;
@@ -170,7 +170,7 @@ public class Market {
 		double fuelPrice = 0;
 		for(FuelPrice fuel : fuels){
 			if (fuel.getFuelType() == ship.getFuelType()){
-				fuelPrice = fuel.getPrice();
+				fuelPrice = (fuel.getPrice(departure) + fuel.getPrice(destination)) * 0.5;
 			}
 		}
 		double sumFuelPrice = fuelPrice * fuelamount;

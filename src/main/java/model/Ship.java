@@ -77,8 +77,8 @@ public abstract class Ship {
 					Port port = this.schedule.get(0).getDestination();
 					if(this.dualfuelFlag) {
 						FuelType shipFuelType = null;
-						double hfoPrice = Market.getPrice(FuelType.HFO);
-						double lngPrice = Market.getPrice(FuelType.LNG);
+						double hfoPrice = Market.getPrice(FuelType.HFO, port);
+						double lngPrice = Market.getPrice(FuelType.LNG, port);
 						if (hfoPrice < lngPrice) {
 							shipFuelType = FuelType.HFO;
 						}else {
@@ -122,8 +122,8 @@ public abstract class Ship {
 				Port port = this.schedule.get(0).getDestination();
 				if(this.dualfuelFlag) {
 					FuelType shipFuelType = null;
-					double hfoPrice = Market.getPrice(FuelType.HFO);
-					double lngPrice = Market.getPrice(FuelType.LNG);
+					double hfoPrice = Market.getPrice(FuelType.HFO, port);
+					double lngPrice = Market.getPrice(FuelType.LNG ,port);
 					if (hfoPrice < lngPrice) {
 						shipFuelType = FuelType.HFO;
 					}else {

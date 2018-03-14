@@ -46,7 +46,10 @@ public class BinomialPrice extends FuelPrice{
 		return prePrice;
 	}
 
-
+	@Override
+	public double getPrice(Port port) {
+		return this.price;
+	}
 	@Override
 	public double getPastPrice(int past) {
 		if(past == -1) return this.prePrice;
