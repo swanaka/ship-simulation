@@ -16,6 +16,7 @@ data/*
 .settings
 .project
 .metadata/
+META-INF/
 
 # Idea
 .idea
