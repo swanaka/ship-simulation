@@ -65,6 +65,7 @@ public class SimpleShip extends Ship {
 			this.totalTonKm += actualDis * this.getSchedule().getCargoAmount();
 		}
 		this.setRemainingDistance(this.remainingDistance - actualDis);
+		this.setLoc(this.remainingDistance);
 		if(this.fuelTank.getAmount() < foc * speed){
 			this.totalFuel += this.fuelTank.getAmount();
 			this.totalFuelPrice += this.fuelTank.getAmount() *  this.fuelPrice;
@@ -77,6 +78,13 @@ public class SimpleShip extends Ship {
 		this.acumCost += this.getOperatingCost();
 		this.totalCost += this.getOperatingCost();
 
+	}
+	
+	public void setLoc(double remainingDistance) {
+		Route route = PortNetwork.getRoute(this.getSchedule().getDeparture(), this.getSchedule().getDestination());
+		double[] latlon = route.getLatLon(remainingDistance);
+		this.loc.setloc(latlon[0], latlon[1]);
+		
 	}
 
 	@Override

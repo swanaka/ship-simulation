@@ -8,6 +8,7 @@ import model.Status.FuelType;
 public class PortNetwork {
 	
 	private static List<Port> portList;
+	private static List<Route> routes;
 	private static double[][] routeMatrix;
 	private static PortNetwork portnetwork = new PortNetwork();
 	
@@ -56,6 +57,19 @@ public class PortNetwork {
 	public static void setPortSettings(List<Port> pList,double[][] route){
 		portList = pList;
 		routeMatrix = route;
+	}
+	public static void setPortSettings(List<Port> pList,double[][] route, List<Route> rList){
+		portList = pList;
+		routeMatrix = route;
+		routes = rList;
+	}
+	public static Route getRoute(Port deaprture, Port destination) {
+		for(Route route : routes) {
+			if(route.getOrigin().equals(deaprture) && route.getDestination().equals(destination)) {
+				return route;
+			}
+		}
+		return null;
 	}
 	
 	public static boolean avilablePort(String portname, FuelType type) {

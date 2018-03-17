@@ -28,6 +28,7 @@ public class Exec4ComputerAidedWorkshop {
 	private static String OUTPUT_DIR_ROOT = "./data/";
 
 	private static final String casefile = "case_table4Workshop.csv";
+	//private static final String casefile = "case_table4verification.csv";
 	private static boolean detourFlag;
 	////CASE SETTING
 	private static final int numOfShips = 20;
