@@ -59,7 +59,7 @@ public class Exec4Workshop {
 			input.setNumOfBunkeringFacilitiesAtJapan(japanSetting[0]);
 			input.setBunkeringMethodAtJapan(japanSetting[1]);
 			input.setNumOfBunkeringFacilitiesAtSingapore(singaporeSetting[0]);
-			input.setNumOfBunkeringFacilitiesAtSingapore(singaporeSetting[1]);
+			input.setBunkeringMethodAtSingapore(singaporeSetting[1]);
 			
 			execOneshot(endTime, input, caseNum);
 		}

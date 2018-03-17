@@ -26,7 +26,7 @@ public interface SimulationData {
 	final double bunkeringCapacityShip = 94;
 	final double bunkeringCapacityTruck = 21;
 	final double berthingFee = 520;
-	final double[][] routeMatrix = {{0, 12800, 6400},{12800, 0, 6400}, {6400, 6400, 0}};
+	final double[][] routeMatrix = {{0, 12349.136, 6952.408},{12349.136, 0, 5981.96}, {6952.408, 5981.96, 0}};
 	
 	
 	final double upforStandard = 1;

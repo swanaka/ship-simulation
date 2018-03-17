@@ -41,45 +41,47 @@ public class Simulation4Workshop extends Simulation implements SimulationData{
 		Market.reset();
 		
 		List<Port> ports = new ArrayList<Port>();
-		ports.add(settingForPort("Persian Gulf", Integer.parseInt(data.getNumOfBunkeringFacilitiesAtPersianGulf()), data.getBunkeringMethodAtPersianGulf(), persianLat, persianLon));
-		ports.add(settingForPort("Japan", Integer.parseInt(data.getNumOfBunkeringFacilitiesAtJapan()), data.getBunkeringMethodAtJapan(), japanLat, japanLon));
-		ports.add(settingForPort("Singapore", Integer.parseInt(data.getNumOfBunkeringFacilitiesAtSingapore()), data.getBunkeringMethodAtSingapore(), singaporeLat, singaporeLon));
-		
+		Port persian = settingForPort("Persian Gulf", Integer.parseInt(data.getNumOfBunkeringFacilitiesAtPersianGulf()), data.getBunkeringMethodAtPersianGulf(), persianLat, persianLon);
+		ports.add(persian);
+		Port japan = settingForPort("Japan", Integer.parseInt(data.getNumOfBunkeringFacilitiesAtJapan()), data.getBunkeringMethodAtJapan(), japanLat, japanLon);
+		ports.add(japan);
+		Port singapore = settingForPort("Singapore", Integer.parseInt(data.getNumOfBunkeringFacilitiesAtSingapore()), data.getBunkeringMethodAtSingapore(), singaporeLat, singaporeLon);
+		ports.add(singapore);
 		List<Route> routes = new ArrayList<Route>();
 		Route japan2persiangulf = new Route();
-		japan2persiangulf.setOrigin(PortNetwork.getPort("Japan"));
-		japan2persiangulf.setDestination(PortNetwork.getPort("Persian Gulf"));
-		japan2persiangulf.importFromCSV("data/Japan2PersianGulf.csv");
+		japan2persiangulf.setOrigin(japan);
+		japan2persiangulf.setDestination(persian);
+		japan2persiangulf.importFromCSV("input/Japan2PersianGulf.csv");
 		routes.add(japan2persiangulf);
 		
 		Route persiangulf2japan = new Route();
-		persiangulf2japan.setOrigin(PortNetwork.getPort("Persian Gulf"));
-		persiangulf2japan.setDestination(PortNetwork.getPort("Japan"));
-		persiangulf2japan.importFromCSV("data/PersianGulf2Japan.csv");
+		persiangulf2japan.setOrigin(persian);
+		persiangulf2japan.setDestination(japan);
+		persiangulf2japan.importFromCSV("input/PersianGulf2Japan.csv");
 		routes.add(persiangulf2japan);
 
 		Route persiangulf2singapore = new Route();
-		persiangulf2singapore.setOrigin(PortNetwork.getPort("Persian Gulf"));
-		persiangulf2singapore.setDestination(PortNetwork.getPort("Singapore"));
-		persiangulf2singapore.importFromCSV("data/PersianGulf2Singapore.csv");
+		persiangulf2singapore.setOrigin(persian);
+		persiangulf2singapore.setDestination(singapore);
+		persiangulf2singapore.importFromCSV("input/PersianGulf2Singapore.csv");
 		routes.add(persiangulf2singapore);
 		
 		Route singapore2persiangulf = new Route();
-		singapore2persiangulf.setOrigin(PortNetwork.getPort("Singapore"));
-		singapore2persiangulf.setDestination(PortNetwork.getPort("Persian Gulf"));
-		singapore2persiangulf.importFromCSV("data/Singapore2PersianGulf.csv");
+		singapore2persiangulf.setOrigin(singapore);
+		singapore2persiangulf.setDestination(persian);
+		singapore2persiangulf.importFromCSV("input/Singapore2PersianGulf.csv");
 		routes.add(singapore2persiangulf);
 		
 		Route japan2singapore = new Route();
-		japan2singapore.setOrigin(PortNetwork.getPort("Japan"));
-		japan2singapore.setDestination(PortNetwork.getPort("Singapore"));
-		japan2singapore.importFromCSV("data/Japan2Singapore.csv");
+		japan2singapore.setOrigin(japan);
+		japan2singapore.setDestination(singapore);
+		japan2singapore.importFromCSV("input/Japan2Singapore.csv");
 		routes.add(japan2singapore);
 		
 		Route singapore2japan = new Route();
-		singapore2japan.setOrigin(PortNetwork.getPort("Singapore"));
-		singapore2japan.setDestination(PortNetwork.getPort("Japan"));
-		singapore2japan.importFromCSV("data/Singapore2Japan.csv");
+		singapore2japan.setOrigin(singapore);
+		singapore2japan.setDestination(japan);
+		singapore2japan.importFromCSV("input/Singapore2Japan.csv");
 		
 		routes.add(singapore2japan);
 		PortNetwork.setPortSettings(ports,routeMatrix, routes);
@@ -161,7 +163,7 @@ public class Simulation4Workshop extends Simulation implements SimulationData{
 		}
 		//TO-DO
 		else{
-			outputList.add(String.valueOf(now));
+			outputList.add(String.valueOf(now - 17520));
 			for(Ship ship : ships){
 				outputList.add(ship.getShipStatus().name());
 				outputList.add(String.valueOf(ship.getFuelType()));
@@ -200,7 +202,7 @@ public class Simulation4Workshop extends Simulation implements SimulationData{
 			outputList.add(String.valueOf(hfoPrice));
 			outputList.add(String.valueOf(lsfoPrice));
 			outputList.add(String.valueOf(lngPrice));
-			CSVwriter.write(OUTPUT_DIR + casenum + ".csv", outputList, false);
+			CSVwriter.write(OUTPUT_DIR + casenum + ".csv", outputList, true);
 		}
 
 	}
@@ -216,8 +218,7 @@ public class Simulation4Workshop extends Simulation implements SimulationData{
 		outputList.add("Total SOx Emission rate");
 		outputList.add("Total Waiting Time rate");
 		outputList.add("InitialCost");
-		CSVwriter.write(OUTPUT_DIR + casenum+"_overall.csv", outputList, true);
-		CSVwriter.write(OUTPUT_DIR + "overall.csv", outputList, true);
+		CSVwriter.write(OUTPUT_DIR + casenum+"_overall.csv", outputList, false);
 		
 		outputList = new ArrayList<String>();
 		Map<String, String> result = getResult();

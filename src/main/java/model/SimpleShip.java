@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 import model.Status.CargoType;
 import model.Status.FuelType;
+import util.Location;
 
 
 /*
@@ -33,6 +34,7 @@ public class SimpleShip extends Ship {
 		this.engine = new SimpleEngine(foc);
 		Schedule initialSchedule = new SimpleSchedule(0,0,initialPort,initialPort);
 		this.schedule.add(initialSchedule);
+		this.loc = new Location(initialPort.getLoc().getLat(), initialPort.getLoc().getLon());
 		this.setOperatingCost(operatingCost);
 		this.scrubber = scrubber;
 		this.gasdieselFlag = gasDiesel;
