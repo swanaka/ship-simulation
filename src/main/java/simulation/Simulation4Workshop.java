@@ -131,7 +131,7 @@ public class Simulation4Workshop extends Simulation implements SimulationData{
 		save(-1);
 		while(now <= endTime){
 			timeNext();
-			if(17520 < now && now < 26280) save(now);
+			if(21899 < now && now < 26280) save(now);
 			now++;
 		}
 		save();
@@ -162,8 +162,8 @@ public class Simulation4Workshop extends Simulation implements SimulationData{
 			CSVwriter.write(OUTPUT_DIR + casenum + ".csv", outputList, false);
 		}
 		//TO-DO
-		else{
-			outputList.add(String.valueOf(now - 17520));
+		else if(now % 4 == 0){
+			outputList.add(String.valueOf(now - 21899));
 			for(Ship ship : ships){
 				outputList.add(ship.getShipStatus().name());
 				outputList.add(String.valueOf(ship.getFuelType()));
