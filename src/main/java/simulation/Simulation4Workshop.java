@@ -29,7 +29,7 @@ import util.Location;
 public class Simulation4Workshop extends Simulation implements SimulationData{
 	
 	private CAPEXCalculator4Workshop calculator;
-	private static String OUTPUT_DIR = "./data/";
+	private static String OUTPUT_DIR = "./data/cases/";
 	private String casenum;
 	
 

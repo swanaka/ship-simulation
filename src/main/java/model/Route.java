@@ -40,6 +40,11 @@ public class Route {
 		}
 
 		double[] latlon = new double[2];
+		if(distance == 0) {
+			latlon[0] = this.destination.getLoc().getLat();
+			latlon[1] = this.destination.getLoc().getLon();
+			return latlon;
+		}
 		for(double point[] : points) {
 			if (point[2] > distance) {
 				int index = points.indexOf(point);

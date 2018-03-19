@@ -71,8 +71,6 @@ public class Exec4Workshop {
 		
 		Simulation simulation = new Simulation4Workshop(endTime, data, casenum);
 		simulation.setSaveFlag(true);
-		System.out.println("Simulation Start");
 		simulation.execute();
-		System.out.println("Simulation End");
 	}
 }
