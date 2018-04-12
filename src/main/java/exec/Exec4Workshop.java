@@ -16,6 +16,7 @@ public class Exec4Workshop {
 	private static final String INPUT_DIR = "./data/";
 
 	public static void main(String[] args) {
+		long start = System.currentTimeMillis();
 		int endTime = 8760 * 100;
 		if(args.length == 0) {
 			System.out.println("You need to designate the input file name");
@@ -63,8 +64,9 @@ public class Exec4Workshop {
 			
 			execOneshot(endTime, input, caseNum);
 		}
-		
+		long end = System.currentTimeMillis();
 		System.out.println("-------------All of the Simulation End ----------");
+		System.out.println("Processing time:" + String.valueOf((end-start)/1000) + "s");
 	}
 	
 	public static void execOneshot(int endTime, InputData data, String casenum) {
