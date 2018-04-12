@@ -84,7 +84,7 @@ public class SimpleShip extends Ship {
 	
 	public void setLoc(double remainingDistance) {
 		Route route = PortNetwork.getRoute(this.getSchedule().getDeparture(), this.getSchedule().getDestination());
-		double[] latlon = route.getLatLon(remainingDistance);
+		double[] latlon = route.getLatLon(route.getDistance() - remainingDistance);
 		this.loc.setloc(latlon[0], latlon[1]);
 		
 	}
