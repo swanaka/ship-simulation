@@ -10,7 +10,7 @@ public interface SimulationData {
 	final double speed = 28;
 	final CargoType cargoType = CargoType.OIL;
 	final double cargoAmount = 300000;
-	final double fuelCapacity = 5000;
+	final double fuelCapacity = 2000;
 	final double focHFO = 0.124;
 	final double focLSFO = 0.11;
 	final double focLNG = 0.10;
