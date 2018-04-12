@@ -68,7 +68,9 @@ public class Exec4Workshop {
 	}
 	
 	public static void execOneshot(int endTime, InputData data, String casenum) {
-		
+		if(Integer.parseInt(casenum) % 1000 == 0) {
+			System.out.println(casenum);
+		}
 		Simulation simulation = new Simulation4Workshop(endTime, data, casenum);
 		simulation.setSaveFlag(true);
 		simulation.execute();
